@@ -1,2 +1,3 @@
 record/migrations/ # ignore migrations folder
 winning/__pycache__/ # ignore pycache folder
+*.sqlite3
