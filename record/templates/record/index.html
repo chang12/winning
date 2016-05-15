@@ -1,10 +1,21 @@
-<p>
-    <a href="">
-        LOGIN
-    </a>
-</p>
-<p>
-    <a href="{% url 'accounts:signup' %}">
-        SIGN UP
-    </a>
-</p>
+{% if user.is_authenticated %}
+    <p>
+         Welcome <em>{{ user }}</em> !
+    </p>
+    <p>
+        <a href="{% url 'logout' %}?next={{ request.path }}">
+            LOGOUT
+        </a>
+    </p>
+{% else %}
+    <p>
+        <a href="{% url 'login' %}">
+            LOGIN
+        </a>
+    </p>
+    <p>
+        <a href="{% url 'accounts:signup' %}">
+            SIGN UP
+        </a>
+    </p>
+{% endif %}
