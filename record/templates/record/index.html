@@ -1,10 +1,16 @@
 {% if user.is_authenticated %}
     <p>
-         Welcome <em>{{ user }}</em> !
+         Welcome <em>{{ user.profile.nickname }}</em> !
     </p>
     <p>
         <a href="{% url 'logout' %}?next={{ request.path }}">
             LOGOUT
+        </a>
+    </p>
+    <hr>
+    <p>
+        <a href="{% url 'record:match_new' %}">
+            전적 생성
         </a>
     </p>
 {% else %}

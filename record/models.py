@@ -10,3 +10,6 @@ class Match(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     score1 = models.IntegerField()
     score2 = models.IntegerField()
+
+    def __str__(self):
+        return self.player1.username+' '+self.player2.username+' ('+str(self.time)+')'
