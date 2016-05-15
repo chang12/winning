@@ -41,11 +41,18 @@ def find(request):
         'form': form,
     })
 
-def detail(request, pk1, pk2):
-    p1 = User.objects.get(pk=pk1)
-    p2 = User.objects.get(pk=pk2)
 
-    return render(request, 'record/detail.html', {
-        'name1': p1.username,
-        'name2': p2.username,
-    })
+@login_required
+def detail(request, pk1, pk2):
+    if request.user.pk == int(pk1):
+        p1 = User.objects.get(pk=pk1)
+        p2 = User.objects.get(pk=pk2)
+        return render(request, 'record/detail.html', {
+            'name1': p1.username,
+            'name2': p2.username,
+        })
+    else:
+        msg = "자신이 경기한 전적만 열람할 수 있습니다."
+        return render(request, 'record/error.html', {
+            'msg': msg,
+        })
