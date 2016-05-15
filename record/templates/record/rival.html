@@ -1,0 +1,8 @@
+<p>
+    안녕하세요. {{user.username}}님.
+</p>
+<form action="" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="전적 찾기"/>
+</form>
