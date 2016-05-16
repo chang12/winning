@@ -1,6 +1,13 @@
 <p>
     안녕하세요. {{user.username}}님.
 </p>
+<p>
+    {% if request.GET.flag == '0' %}
+        함께 플레이한 유저를 검색해주세요.
+    {% else %}
+        전적이 궁금한 유저를 검색해주세요.
+    {% endif %}
+</p>
 <form action="" method="POST">
     {% csrf_token %}
     {{ form }}
