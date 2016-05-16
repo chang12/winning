@@ -50,7 +50,10 @@ def detail(request, pk1, pk2):
         p2 = User.objects.get(pk=pk2)
         matches = Match.objects.filter(player1=p1, player2=p2)
         win, draw, defeat = 0, 0, 0
+        GF, GA = 0, 0
         for match in matches:
+            GF = GF + match.score1
+            GA = GA + match.score2
             if match.score1 > match.score2:
                 win = win + 1;
             elif match.score1 < match.score2:
@@ -63,6 +66,8 @@ def detail(request, pk1, pk2):
             'win': win,
             'draw': draw,
             'defeat': defeat,
+            'GF': GF,
+            'GA': GA,
         })
     else:
         msg = "자신이 경기한 전적만 열람할 수 있습니다."
