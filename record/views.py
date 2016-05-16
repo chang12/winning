@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render
 
 from .forms import MatchForm, RivalForm
@@ -16,6 +17,10 @@ def match_new(request):
         if form.is_valid():
             model = form.save(commit=False)
             model.player1 = request.user
+            pk = int(request.GET['rival'])
+            rival = User.objects.filter(pk=pk)
+            print(rival)
+            model.player2 = User.objects.get(pk=pk)
             model.save()
         return redirect('record:index')
     else:
@@ -29,12 +34,16 @@ def match_new(request):
 def find(request):
     if request.method == 'POST':
         form = RivalForm(request.POST)
-        print("check")
         if form.is_valid():
             # 전적 디테일 페이지로 redirect.
             pk1 = request.user.pk
             pk2 = form.cleaned_data['player'].pk
-            return redirect('record:detail', pk1, pk2)
+            flag = int(request.GET['flag'])
+            if flag == 0:
+                url = reverse('record:match_new')+'?rival='+str(pk2)
+                return redirect(url)
+            else:
+                return redirect('record:detail', pk1, pk2)
     else:
         form = RivalForm()
 

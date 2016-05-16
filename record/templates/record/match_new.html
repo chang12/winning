@@ -1,5 +1,5 @@
 <form action="" method="POST">
     {% csrf_token %}
-    {{ form }}
+    {{ form|linebreaks }}
     <input type="submit" value="전적 생성">
 </form>
