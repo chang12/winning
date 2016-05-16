@@ -48,9 +48,10 @@ def detail(request, pk1, pk2):
     if request.user.pk == int(pk1):
         p1 = User.objects.get(pk=pk1)
         p2 = User.objects.get(pk=pk2)
-        matches = Match.objects.filter(player1=p1, player2=p2)
+        matches = Match.objects.filter(player1=p1, player2=p2).order_by('-time')
         win, draw, defeat = 0, 0, 0
         GF, GA = 0, 0
+
         for match in matches:
             GF = GF + match.score1
             GA = GA + match.score2
@@ -60,6 +61,17 @@ def detail(request, pk1, pk2):
                 defeat = defeat + 1;
             else:
                 draw = draw + 1;
+
+        last_five = matches[:5]
+        curr_five = ""
+        for match in last_five:
+            if match.score1 > match.score2:
+                curr_five = '승' + curr_five
+            elif match.score1 < match.score2:
+                curr_five = '패' + curr_five
+            else:
+                curr_five = '무' + curr_five
+
         return render(request, 'record/detail.html', {
             'name1': p1.username,
             'name2': p2.username,
@@ -68,6 +80,8 @@ def detail(request, pk1, pk2):
             'defeat': defeat,
             'GF': GF,
             'GA': GA,
+            'curr_five': curr_five,
+            'last_five': last_five,
         })
     else:
         msg = "자신이 경기한 전적만 열람할 수 있습니다."
