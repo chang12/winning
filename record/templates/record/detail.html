@@ -1,35 +1,36 @@
-<p>
-    Detail page for {{ name1 }} and {{ name2 }}
-</p>
-<hr/>
-<p>
-    <B>
-        전체 전적
-    </B>
-</p>
-<p>
-    {{ win }}승 {{ draw }}무 {{ defeat }}패
-</p>
-<p>
-    {{ GF }}득점 {{ GA }}실점
-</p>
-<hr/>
-<p>
-    <B>
-        최근 5경기 전적
-    </B>
-</p>
-<p>
-    {{ curr_five }}
-</p>
-{% for match in last_five %}
+
     <p>
-        {{ match.team1 }} {{ match.score1 }} vs {{ match.score2 }} {{ match.team2 }}
+        Detail page for {{ name1 }} and {{ name2 }}
     </p>
-{% endfor %}
-<hr/>
-<p>
-    <a href="{% url 'record:index' %}">
-        메인 페이지로
-    </a>
-</p>
+    <hr/>
+    <p>
+        <B>
+            전체 전적
+        </B>
+    </p>
+    <p>
+        {{ win }}승 {{ draw }}무 {{ defeat }}패
+    </p>
+    <p>
+        {{ GF }}득점 {{ GA }}실점
+    </p>
+    <hr/>
+    <p>
+        <B>
+            최근 5경기 전적
+        </B>
+    </p>
+    <p>
+        {{ curr_five }}
+    </p>
+    {% for match in last_five %}
+        <p>
+            {{ match.team1 }} {{ match.score1 }} vs {{ match.score2 }} {{ match.team2 }}
+        </p>
+    {% endfor %}
+    <hr/>
+    <p>
+        <a href="{% url 'record:index' %}">
+            메인 페이지로
+        </a>
+    </p>

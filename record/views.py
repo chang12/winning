@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.shortcuts import redirect, render
 
 from .forms import MatchForm, RivalForm
@@ -8,7 +9,11 @@ from .models import Match
 
 # Create your views here.
 def index(request):
-    return render(request, 'record/index.html')
+    pk = request.user.pk
+    users = User.objects.filter(~Q(pk = pk))
+    return render(request, 'record/index.html', {
+        'users': users,
+    })
 
 @login_required
 def match_new(request):
@@ -32,23 +37,40 @@ def match_new(request):
 
 @login_required
 def find(request):
+    users = ''
     if request.method == 'POST':
-        form = RivalForm(request.POST)
-        if form.is_valid():
-            # 전적 디테일 페이지로 redirect.
-            pk1 = request.user.pk
-            pk2 = form.cleaned_data['player'].pk
-            flag = int(request.GET['flag'])
-            if flag == 0:
-                url = reverse('record:match_new')+'?rival='+str(pk2)
-                return redirect(url)
-            else:
-                return redirect('record:detail', pk1, pk2)
+        flag = int(request.GET['flag'])
+        pk1 = request.user.pk
+        pk2 = int(request.POST['id'])
+        # 전적 생성이 요청된 경우.
+        if flag == 0:
+            url = reverse('record:match_new')
+            url = url + '?rival=' + str(pk2)
+            return redirect(url)
+        # 전적 확인이 요청된 경우.
+        else:
+            return redirect('record:detail', pk1, pk2)
+
+
+        # form = RivalForm(request.POST)
+        # if form.is_valid():
+        #     # 전적 디테일 페이지로 redirect.
+        #     pk1 = request.user.pk
+        #     pk2 = form.cleaned_data['player'].pk
+        #     flag = int(request.GET['flag'])
+        #     if flag == 0:
+        #         url = reverse('record:match_new')+'?rival='+str(pk2)
+        #         return redirect(url)
+        #     else:
+        #         return redirect('record:detail', pk1, pk2)
     else:
         form = RivalForm()
+        pk = int(request.user.pk)
+        users = User.objects.filter(~Q(pk = pk))
 
     return render(request, 'record/rival.html', {
         'form': form,
+        'users': users,
     })
 
 

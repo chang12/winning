@@ -1,15 +1,37 @@
-<p>
-    안녕하세요. {{user.username}}님.
-</p>
-<p>
-    {% if request.GET.flag == '0' %}
-        함께 플레이한 유저를 검색해주세요.
-    {% else %}
-        전적이 궁금한 유저를 검색해주세요.
-    {% endif %}
-</p>
-<form action="" method="POST">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="유저 검색"/>
-</form>
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Semantic UI Core CSS -->
+    <link href="{% static "semantic.min.css" %}" rel="stylesheet">
+</head>
+<body>
+    <p>
+        안녕하세요. {{user.username}}님.
+    </p>
+    <p>
+        {% if request.GET.flag == '0' %}
+            함께 플레이한 유저를 검색해주세요.
+        {% else %}
+            전적이 궁금한 유저를 검색해주세요.
+        {% endif %}
+    </p>
+    <form class="ui form" action="" method="POST">
+        {% csrf_token %}
+        <div class="field">
+            <label>상대 플레이어 찾기</label>
+            <select class="ui search dropdown" name="id">
+                <option value="">아이디 검색</option>
+                {% for user in users %}
+                    <option value={{user.pk}}>{{user.username}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button class="ui button" type="submit">Submit</button>
+    </form>
+    <script src="{% static "jquery-1.12.3.min.js" %}"></script>
+    <script src="{% static "semantic.min.js" %}"></script>
+    <script> $("select.dropdown").dropdown(); </script>
+</body>
+</html>
