@@ -14,6 +14,8 @@ class Match(models.Model):
     def __str__(self):
         return self.player1.username+' '+self.player2.username+' ('+str(self.time)+')'
 
-
 class Rival(models.Model):
     player = models.ForeignKey(User)
+
+class Team(models.Model):
+    teamname = models.CharField(max_length=20)
