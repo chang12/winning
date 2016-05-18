@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.shortcuts import redirect, render
 
 from .forms import MatchForm, RivalForm
-from .models import Match
+from .models import Match, Team
 
 # Create your views here.
 def index(request):
@@ -18,21 +18,26 @@ def index(request):
 @login_required
 def match_new(request):
     if request.method == 'POST':
+        teams = ''
         form = MatchForm(request.POST)
         if form.is_valid():
             model = form.save(commit=False)
             model.player1 = request.user
             pk = int(request.GET['rival'])
             rival = User.objects.filter(pk=pk)
-            print(rival)
             model.player2 = User.objects.get(pk=pk)
+            team1 = Team.objects.get(pk=request.POST['team1'])
+            team2 = Team.objects.get(pk=request.POST['team2'])
+            model.team1, model.team2 = team1, team2
             model.save()
         return redirect('record:index')
     else:
         form = MatchForm()
+        teams = Team.objects.all()
 
     return render(request, 'record/match_new.html', {
         'form': form,
+        'teams': teams,
     })
 
 @login_required
@@ -50,19 +55,6 @@ def find(request):
         # 전적 확인이 요청된 경우.
         else:
             return redirect('record:detail', pk1, pk2)
-
-
-        # form = RivalForm(request.POST)
-        # if form.is_valid():
-        #     # 전적 디테일 페이지로 redirect.
-        #     pk1 = request.user.pk
-        #     pk2 = form.cleaned_data['player'].pk
-        #     flag = int(request.GET['flag'])
-        #     if flag == 0:
-        #         url = reverse('record:match_new')+'?rival='+str(pk2)
-        #         return redirect(url)
-        #     else:
-        #         return redirect('record:detail', pk1, pk2)
     else:
         form = RivalForm()
         pk = int(request.user.pk)

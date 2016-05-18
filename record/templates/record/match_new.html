@@ -1,5 +1,38 @@
-<form action="" method="POST">
-    {% csrf_token %}
-    {{ form|linebreaks }}
-    <input type="submit" value="전적 생성">
-</form>
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Semantic UI Core CSS -->
+    <link href="{% static "semantic.min.css" %}" rel="stylesheet">
+</head>
+<body>
+    <form class="ui form" action="" method="POST">
+        {% csrf_token %}
+        <div class="field">
+            <label>팀 선택</label>
+            <select class="ui search dropdown" name="team1">
+                <option value="">팀 검색1</option>
+                {% for team in teams %}
+                    <option value={{team.pk}}>{{team.teamname}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="field">
+            <label>팀 선택</label>
+            <select class="ui search dropdown" name="team2">
+                <option value="">팀 검색2</option>
+                {% for team in teams %}
+                    <option value={{team.pk}}>{{team.teamname}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {{ form|linebreaks }}
+        <button class="ui button" type="submit">Submit</button>
+    </form>
+    <!-- Semantic UI Core JS with jQuery-->
+    <script src="{% static "jquery-1.12.3.min.js" %}"></script>
+    <script src="{% static "semantic.min.js" %}"></script>
+    <script> $("select.dropdown").dropdown(); </script>
+</body>
+</html>
