@@ -6,6 +6,7 @@ from django.shortcuts import redirect, render
 
 from .forms import MatchForm, RivalForm
 from .models import Match, Team
+from .utils import getkey
 
 # Create your views here.
 def index(request):
@@ -69,11 +70,9 @@ def find(request):
 @login_required
 def detail(request, pk1, pk2):
     if request.user.pk == int(pk1):
-        p1 = User.objects.get(pk=pk1)
-        p2 = User.objects.get(pk=pk2)
+        p1, p2 = User.objects.get(pk=pk1), User.objects.get(pk=pk2)
         matches = Match.objects.filter(player1=p1, player2=p2).order_by('-time')
-        win, draw, defeat = 0, 0, 0
-        GF, GA = 0, 0
+        win, draw, defeat, GF, GA = 0, 0, 0, 0, 0
 
         for match in matches:
             GF = GF + match.score1
@@ -95,6 +94,22 @@ def detail(request, pk1, pk2):
             else:
                 curr_five = '무' + curr_five
 
+        team1s = Match.objects.filter(player1=p1, player2=p2).values('team1').distinct()
+        infos = []
+        for team1 in team1s:
+            team = Team.objects.get(pk=team1['team1'])
+            matches = Match.objects.filter(player1=p1, player2=p2, team1=team)
+            if len(matches) >= 3:
+                twin, tdraw, tdefeat = 0, 0, 0
+                for m in matches:
+                    twin = twin + (m.score1 > m.score2)
+                    tdraw = tdraw + (m.score1 == m.score2)
+                    tdefeat = tdefeat + (m.score1 < m.score2)
+                point = (twin * 3 + tdraw) / len(matches)
+                infos.append({"teamname": team.teamname, "point": point})
+        # point 내림차순으로 정렬.
+        infos.sort(key=getkey, reverse=True)
+
         return render(request, 'record/detail.html', {
             'name1': p1.profile.nickname,
             'name2': p2.profile.nickname,
@@ -105,6 +120,7 @@ def detail(request, pk1, pk2):
             'GA': GA,
             'curr_five': curr_five,
             'last_five': last_five,
+            'infos': infos,
         })
     else:
         msg = "자신이 경기한 전적만 열람할 수 있습니다."

@@ -8,4 +8,8 @@
 {% for match in last_five %}
     <p>{{ match.team1 }} <B>{{ match.score1 }}</B> vs <B>{{ match.score2 }}</B> {{ match.team2 }}</p>
 {% endfor %}
+<p><B>경기당 평균 승점 상위 3팀(3경기 이상 진행 팀 한정)</B></p>
+{% for info in infos %}
+    <p>{{info.teamname}}: {{info.point}}</p>
+{% endfor %}
 <p><a href="{% url 'record:index' %}">메인 페이지로</a></p>
