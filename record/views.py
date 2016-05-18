@@ -96,8 +96,8 @@ def detail(request, pk1, pk2):
                 curr_five = '무' + curr_five
 
         return render(request, 'record/detail.html', {
-            'name1': p1.username,
-            'name2': p2.username,
+            'name1': p1.profile.nickname,
+            'name2': p2.profile.nickname,
             'win': win,
             'draw': draw,
             'defeat': defeat,
