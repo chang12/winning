@@ -1,5 +1,17 @@
-<form action="" method="POST">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="제출">
-</form>
+{% load staticfiles %}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Semantic UI Core CSS -->
+    <link href="{% static "semantic.min.css" %}" rel="stylesheet">
+</head>
+<body>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form|linebreaks }}
+        <button class="ui button">회원가입</button>
+        {# <input type="submit" value="제출"> #}
+    </form>
+</body>
+</html>

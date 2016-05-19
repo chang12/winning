@@ -1,3 +1,5 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <p><B>{{ name1 }}</B>님의 <B>{{ name2 }}</B>님에 대한 상대전적 입니다. </p>
 <hr/>
 <p><B>통산 전적</B></p>
@@ -12,4 +14,5 @@
 {% for info in infos %}
     <p>{{info.teamname}}: {{info.point}}</p>
 {% endfor %}
+<hr/>
 <p><a href="{% url 'record:index' %}">메인 페이지로</a></p>
