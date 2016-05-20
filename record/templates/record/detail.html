@@ -1,6 +1,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<p><B>{{ name1 }}</B>님의 <B>{{ name2 }}</B>님에 대한 상대전적 입니다. </p>
+<p><B>{{ p1.profile.nickname }}</B>님의 <B>{{ p2.profile.nickname }}</B>님에 대한 상대전적 입니다. </p>
 <hr/>
 <p><B>통산 전적</B></p>
 <p>{{ win }}승 {{ draw }}무 {{ defeat }}패</p>
@@ -8,7 +8,11 @@
 <p>{{ GF }}득점 {{ GA }}실점</p>
 <p><B>최근 5경기 전적</B> ({{ curr_five }})</p>
 {% for match in last_five %}
-    <p>{{ match.team1 }} <B>{{ match.score1 }}</B> vs <B>{{ match.score2 }}</B> {{ match.team2 }}</p>
+    {% if pk1_is_smaller %}
+        <p>{{ match.team1 }} <B>{{ match.score1 }}</B> vs <B>{{ match.score2 }}</B> {{ match.team2 }}</p>
+    {% else %}
+        <p>{{ match.team2 }} <B>{{ match.score2 }}</B> vs <B>{{ match.score1 }}</B> {{ match.team1 }}</p>
+    {% endif %}
 {% endfor %}
 <p><B>경기당 평균 승점 상위 3팀(3경기 이상 진행 팀 한정)</B></p>
 {% for info in infos %}
