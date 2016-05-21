@@ -60,7 +60,7 @@ def find(request):
     else:
         form = RivalForm()
         pk = request.user.pk
-        users = User.objects.filter(~Q(pk = pk))
+        users = User.objects.filter((~Q(pk = pk)) & Q(is_staff = False))
         return render(request, 'record/rival.html', {
             'form': form,
             'users': users,
