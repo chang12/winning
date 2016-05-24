@@ -39,11 +39,6 @@
             background-color: black;
             /*padding-top: 10%;*/
         }
-        .main {
-            width: 100%;
-            height: 50%;
-            overflow: auto;
-        }
         .main-title {
             width: 90%;
             margin-left: 5vw;
@@ -73,16 +68,32 @@
             margin-bottom: 3vh;
             font-size: 6vw;
         }
+        .background {
+            z-index: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url({% static "main.jpg" %});
+            -webkit-filter: blur(7px) grayscale(80%) opacity(100%);
+        }
+        .main {
+            z-index: 1;
+        }
+        .main, .background {
+            position: absolute;
+        }
     </style>
 </head>
 <body>
-    <p class="main-title">당신의 위닝을 기록하세요</p>
-    <p class="main-content">친구들과의 즐거운 게임 기록을 남겨보세요. 유저, 팀, 스코어를 기록할 수 있습니다. 간단한 통계 리포트를 확인하여 경쟁력을 향상시켜보세요.</p>
-    <form action="{% url "accounts:signup" %}">
-        <button>가입하여 시작하기</button>
-    </form>
-    <form action="{% url "login" %}">
-        <button>로그인</button>
-    </form>
+    <div class="background"></div>
+    <div class="main">
+        <p class="main-title">당신의 위닝을 기록하세요</p>
+        <p class="main-content">친구들과의 즐거운 게임 기록을 남겨보세요. 유저, 팀, 스코어를 기록할 수 있습니다. 간단한 통계 리포트를 확인하여 경쟁력을 향상시켜보세요.</p>
+        <form action="{% url "accounts:signup" %}">
+            <button>가입하여 시작하기</button>
+        </form>
+        <form action="{% url "login" %}">
+            <button>로그인</button>
+        </form>
+    </div>
 </body>
 </html>
