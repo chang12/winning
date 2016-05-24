@@ -1,0 +1,91 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Viewport Setting -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Semantic UI Core CSS -->
+    <link href="{% static "semantic.min.css" %}" rel="stylesheet">
+    <!-- Style Tag for image -->
+    <style>
+        .main {
+            z-index: 1;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            padding-top: 30%;
+            /*padding-left: 10%;*/
+            /*padding-right: 10%;*/
+        }
+        .main-title {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            font-size: 7vw;
+            /*background-color: red;*/
+            margin-bottom: 5%;
+        }
+        .main-content {
+            width: 80%;
+            margin: auto;
+            margin-bottom: 20%;
+            color: #FFFFFF;
+            /*font-weight: bold;*/
+            font-size: 4vw;
+            /*background-color: blue;*/
+        }
+        .main-buttons {
+            width: 50%;
+            margin: auto;
+        }
+        .main-image {
+            z-index: 0;
+            position: fixed;
+            width: 100%
+            height: auto;
+            -webkit-filter: blur(5px) grayscale(90%);
+        }
+        .background-image {
+            z-index: 0;
+            position: fixed;
+            max-width: 100%;
+            height: 100%;
+            /*height: auto;*/
+            background-image: url({% static "main.jpg" %});
+            -webkit-filter: blur(7px) grayscale(80%) opacity(100%);
+        }
+    </style>
+</head>
+<body>
+    <img class="main-image" src="{% static "main.jpg" %}"/>
+    {# <div class="background-image"></div> #}
+    <div class="main">
+        {% if user.is_authenticated %}
+            <p>Welcome <em>{{ user.profile.nickname }}</em> !</p>
+            <p><a href="{% url 'logout' %}?next={{ request.path }}">LOGOUT</a></p>
+            <hr>
+            <p><a href="{% url 'record:find' %}?flag=0">전적 생성</a></p>
+            <p><a href="{% url 'record:find' %}?flag=1">상대전적 확인</a></p>
+        {% else %}
+            <p class="main-title">당신의 위닝을 기록하세요</p>
+            <p class="main-content">친구들과의 즐거운 게임 기록을 남겨주세요. 유저, 팀, 결과 스코어 등을 기록할 수 있습니다. 간단한 통계 리포트를 확인하여 경쟁력을 향상시킬 수 있습니다. </p>
+
+            <div style="width: 60%; margin: auto;">
+                <form action="{% url 'accounts:signup' %}">
+                    <button class="massive fluid ui button" href="{% url 'accounts:signup' %}">
+                        Sign Up
+                    </button>
+                </form>
+                <form action="{% url 'login' %}">
+                    <button class="massive fluid ui secondary button" style="margin-top: 10%;">
+                        Login
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
