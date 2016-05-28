@@ -1,0 +1,41 @@
+{% load staticfiles %}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Semantic UI Core CSS -->
+    {# <link href="{% static "semantic.min.css" %}" rel="stylesheet"> #}
+    <style>
+        body {
+            margin: 0px;
+            overflow: auto;
+        }
+        form {
+            margin: 20vw 0px 0px 0px;
+        }
+        input {
+            width: 70vw;
+            height: 5vh;
+            font-size: 3vh;
+            margin: auto;
+        }
+        button {
+            width: 70vw;
+            height: 5vh;
+            margin-left: 15vw;
+            margin-right: 15vw;
+            font-size: 2.5vh;
+        }
+        p {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form|linebreaks }}
+        <button>계정 만들기</button>
+    </form>
+</body>
+</html>

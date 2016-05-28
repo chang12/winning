@@ -1,17 +1,97 @@
 {% load staticfiles %}
 
 <html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Semantic UI Core CSS -->
-    <link href="{% static "semantic.min.css" %}" rel="stylesheet">
-</head>
-<body>
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{ form|linebreaks }}
-        <button class="ui button">회원가입</button>
-        {# <input type="submit" value="제출"> #}
-    </form>
-</body>
+    <head>
+        <style>
+            body {
+                margin: 0;
+            }
+            .header {
+                width: 100vw;
+                height: 10vh;
+                background-color: black;
+            }
+            .header > .home {
+                height: 6vh;
+                width: auto;
+                margin-left: 5vw;
+                margin-top: 2vh;
+                margin-bottom: 2vh;
+                float: left;
+            }
+            .header > .menu {
+                height: 6vh;
+                width: auto;
+                margin-right: 5vw;
+                margin-top: 2vh;
+                margin-bottom: 2vh;
+                float: right;
+            }
+            .header > .home-text, .menu-text {
+                font-size: 4vh;
+                margin: 0;
+                color: white;
+            }
+            .header > .home-text {
+                float: left;
+            }
+            .header > .menu-text {
+                float: right;
+            }
+            .dropdown-content {
+                display: none;
+            }
+            .dropdown-content > p {
+                width: 100vw;
+                height: 5vh;
+                margin: 0;
+                font-size: 3vh;
+                border-style: solid;
+                border-color: gray;
+                /*display: block;*/
+                /*background-color: black;*/
+            }
+            .show {
+                display: block;
+            }
+            .footer {
+                width: 100vw;
+                height: 10vh;
+                background-color: gray;
+                color: white;
+                font-size: 1.5vh;
+                overflow: auto;
+            }
+            .footer > p {
+                margin-top: 1vh;
+                margin-bottom: 0;
+                margin-left: 3vw;
+                color: white;
+                font-size: 2.2vh;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            {# <img class="home" src="{% static "home.png" %}"/> #}
+            {# <img class="menu" src="{% static "home.png" %}"/> #}
+            <p class="home-text"><a style="text-decoration: none; color: white;" href="{% url "record:index" %}">HOME</a></p>
+            <p class="menu-text"><a onclick="myToggle()">MENU</a></p>
+        </div>
+        <div id="myDropdown" class="dropdown-content">
+            <p><a>Link 1</a></p>
+            <p><a>Link 2</a></p>
+            <p><a>Link 3</a></p>
+        </div>
+        <div class="main"></div>
+        <div class="footer">
+            <p style="font-weight: bold;">Python 웹 프레임워크 Django로 만들어졌습니다.</p>
+            <p>special thanks to <em>allieuslee</em> (a.k.a <em>Ask Django</em>)</p>
+        </div>
+        <script>
+        function myToggle() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+        </script>
+    </body>
 </html>
