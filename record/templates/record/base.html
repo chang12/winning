@@ -1,0 +1,123 @@
+{% load staticfiles %}
+
+<html>
+    <head>
+        <style>
+            body {
+                margin: 0;
+                overflow: auto;
+            }
+            form {
+                margin: 0;
+            }
+            input, button {
+                width: 70vw;
+                height: 5vh;
+            }
+            input {
+                font-size: 3vh;
+                margin: auto;
+            }
+            button {
+                margin-left: 15vw;
+                margin-right: 15vw;
+                font-size: 2.5vh;
+            }
+            p {
+                text-align: center;
+            }
+            .header {
+                width: 100vw;
+                height: 10vh;
+                background-color: black;
+            }
+            .header > .home-text, .menu-text {
+                display: inline-block;
+                width: 30vw;
+                font-size: 4vh;
+                margin: 0;
+                color: white;
+                /*background-color: red;*/
+            }
+            .header > .title-text {
+                display: inline-block;
+                width: 40vw;
+                font-size: 4vh;
+                margin: 0;
+                color: white;
+                /*background-color: blue;*/
+            }
+            .header > .home-text {
+                float: left;
+            }
+            .header > .menu-text {
+                float: right;
+            }
+            .dropdown-content {
+                display: none;
+            }
+            .dropdown-content > p {
+                width: 100vw;
+                height: 5vh;
+                margin: 0;
+                font-size: 3vh;
+                border-style: solid;
+                border-color: gray;
+                /*display: block;*/
+                /*background-color: black;*/
+            }
+            .show {
+                display: block;
+            }
+            .main {
+                width: 100vw;
+                margin-top: 10vh;
+                margin-bottom: 10vh;
+            }
+            .footer {
+                width: 100vw;
+                height: 10vh;
+                background-color: gray;
+                color: white;
+                font-size: 1.5vh;
+                overflow: auto;
+            }
+            .footer > p {
+                margin-top: 1vh;
+                margin-bottom: 0;
+                margin-left: 3vw;
+                color: white;
+                font-size: 2.2vh;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <p class="home-text"><a style="text-decoration: none; color: white;" href="{% url "record:index" %}">HOME</a></p>
+            <p class="title-text">
+                {% block title %}
+                {% endblock %}
+            </p>
+            {# <p style="color: white;">로그인</p> #}
+            <p class="menu-text"><a onclick="myToggle()">MENU</a></p>
+        </div>
+        <div id="myDropdown" class="dropdown-content">
+            <p><a>Link 1</a></p>
+            <p><a>Link 2</a></p>
+            <p><a>Link 3</a></p>
+        </div>
+        <div class="main">
+            {% block main %}
+            {% endblock %}
+        </div>
+        <div class="footer">
+            <p style="font-weight: bold;">Python 웹 프레임워크 Django로 만들어졌습니다.</p>
+            <p>special thanks to <em>allieuslee</em> (a.k.a <em>Ask Django</em>)</p>
+        </div>
+        <script>
+        function myToggle() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+        </script>
+    </body>
+</html>
