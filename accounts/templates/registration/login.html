@@ -1,22 +1,19 @@
-{% load staticfiles %}
+{% extends "record/base.html" %}
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Semantic UI Core CSS -->
-    <link href="{% static "semantic.min.css" %}" rel="stylesheet">
-</head>
-<body>
+{% block title %}
+    로그인
+{% endblock %}
+
+{% block main %}
     <form action="" method="POST">
         {% csrf_token %}
         {{ form|linebreaks }}
-        <button class="ui button">로그인</button>
-        {# <input type="submit" value="로그인"> #}
+        <button>로그인</button>
     </form>
-</body>
-</html>
+{% endblock %}
 
-
-
-
-
+{% block script %}
+    $("label").remove();
+    $("#id_username").attr("placeholder", "이름");
+    $("#id_password").attr("placeholder", "비밀번호");
+{% endblock %}

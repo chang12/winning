@@ -1,8 +1,15 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 from .models import Profile
 
+class MyAuthenticationForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(MyAuthenticationForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].label=''
+        self.fields['username'].widget.attrs['placeholder'] = '이름'
+        self.fields['password'].widget.attrs['placeholder'] = '비밀번호'
 
 class MyUserCreationForm(UserCreationForm):
 

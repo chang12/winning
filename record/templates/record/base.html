@@ -2,6 +2,7 @@
 
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
             body {
                 margin: 0;
@@ -114,10 +115,13 @@
             <p style="font-weight: bold;">Python 웹 프레임워크 Django로 만들어졌습니다.</p>
             <p>special thanks to <em>allieuslee</em> (a.k.a <em>Ask Django</em>)</p>
         </div>
+        <script src="{% static "jquery-1.12.3.min.js" %}"></script>
         <script>
-        function myToggle() {
-            document.getElementById("myDropdown").classList.toggle("show");
-        }
+            function myToggle() {
+                document.getElementById("myDropdown").classList.toggle("show");
+            }
+            {% block script %}
+            {% endblock %}
         </script>
     </body>
 </html>
