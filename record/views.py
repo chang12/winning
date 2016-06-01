@@ -52,10 +52,14 @@ def find(request, mode):
             rival = User.objects.get(username=username)
         except:
             rival = None
+        if mode == "new":
+            button_text = "전적 추가하러 가기"
+        elif mode == "detail":
+            button_text = "전적 확인하러 가기"
         return render(request, 'record/findresult.html',{
             'rival': rival,
+            'button_text': button_text,
         })
-
     elif request.method == 'POST':
         # flag = int(request.GET['flag'])
         pk1 = request.user.pk
