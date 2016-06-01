@@ -89,13 +89,14 @@
         {% if user.is_authenticated %}
             <p class="main-title">{{user.username}}님<br>환영합니다!</p>
             <p class="main-content"></p>
-            <form action="{% url "logout" %}?next={{ request.path }}">
+            <form action="{% url "logout" %}">
+                <input type="hidden" name="next" value="{{request.path}}"/>
                 <button>로그아웃</button>
             </form>
-            <form action="{% url "record:find" %}?flag=0">
+            <form action="{% url "record:find" "new" %}">
                 <button>전적 생성</button>
             </form>
-            <form action="{% url "record:find" %}?flag=1">
+            <form action="{% url "record:find" "detail" %}">
                 <button>상대전적 확인</button>
             </form>
         {% else %}

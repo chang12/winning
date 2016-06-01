@@ -44,26 +44,37 @@ def match_new(request):
         })
 
 @login_required
-def find(request):
-    if request.method == 'POST':
-        flag = int(request.GET['flag'])
+def find(request, mode):
+    if request.is_ajax():
+        # username을 받아온뒤 존재하는지 확인한다.
+        username = request.POST['username']
+        try:
+            rival = User.objects.get(username=username)
+        except:
+            rival = None
+        return render(request, 'record/findresult.html',{
+            'rival': rival,
+        })
+
+    elif request.method == 'POST':
+        # flag = int(request.GET['flag'])
         pk1 = request.user.pk
         pk2 = int(request.POST['id'])
         # 전적 생성이 요청된 경우.
-        if flag == 0:
+        if mode == "new":
             url = reverse('record:match_new')
             url = url + '?rival=' + str(pk2)
             return redirect(url)
         # 전적 확인이 요청된 경우.
-        else:
+        elif mode == "detail":
             return redirect('record:detail', pk1, pk2)
     else:
-        form = RivalForm()
-        pk = request.user.pk
-        users = User.objects.filter((~Q(pk = pk)) & Q(is_staff = False))
+        if mode == "new":
+            title_text = "함께 플레이한 유저를 검색해주세요."
+        elif mode == "detail":
+            title_text = "전적이 궁금한 유저를 입력해주세요."
         return render(request, 'record/rival.html', {
-            'form': form,
-            'users': users,
+            'title_text': title_text,
         })
 
 

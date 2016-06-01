@@ -1,5 +1,33 @@
+{% extends "record/base.html" %}
 {% load staticfiles %}
 
+{% block title %}
+    상대방 찾기
+{% endblock %}
+
+{% block main %}
+    <p>{{title_text}}</p>
+    <p><input id="id_username" name="username" placeholder="이름으로 검색해주세요." type="text"/></p>
+    <button onclick="FindUser()" type="submit">찾기</button>
+    <div id="id_result"></div>
+{% endblock %}
+
+{% block script %}
+    function FindUser() {
+        var username = $("#id_username").val();
+        $.ajax({
+            method: "POST",
+            data: {
+                username: username,
+                csrfmiddlewaretoken: "{{ csrf_token }}"
+            }
+        }).done( function(html){
+            $("#id_result").html(html);
+        });
+    }
+{% endblock %}
+
+{% comment %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,3 +64,4 @@
     <script> $("select.dropdown").dropdown(); </script>
 </body>
 </html>
+{% endcomment %}
