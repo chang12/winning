@@ -93,6 +93,9 @@
                 <input type="hidden" name="next" value="{{request.path}}"/>
                 <button>로그아웃</button>
             </form>
+            <form action="{% url "record:profile" %}">
+                <button>마이 페이지</button>
+            </form>
             <form action="{% url "record:find" "new" %}">
                 <button>전적 생성</button>
             </form>
