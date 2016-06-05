@@ -1,0 +1,12 @@
+{% extends "record/base.html"%}
+{% load staticfiles %}
+
+{% block title %}
+    마이페이지
+{% endblock %}
+
+{% block main %}
+    <p>총 건의 매치가 상대방의 승인을 기다리고 있습니다.</p>
+    <hr/>
+    <p>총 건의 매치가 {{request.user.username}}님의 승인을 기다리고 있습니다.</p>
+{% endblock %}

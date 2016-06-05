@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, render
 
 from .forms import MatchForm, RivalForm
@@ -18,6 +18,10 @@ def index(request):
     return render(request, 'record/index.html', {
         'users': users,
     })
+
+@login_required
+def profile(request):
+    return render(request, "record/profile.html")
 
 @login_required
 def match_show(request):
@@ -42,19 +46,20 @@ def match_new(request):
             form = MatchForm(request.POST)
             if form.is_valid():
                 model = form.save(commit=False)
+                # 상대방이 승인하기전이므로 False로 넣는다.
+                model.accept = False
                 player1, player2 = request.user, User.objects.get(pk=int(request.GET['rival']))
 
-                # model에 player를 입력할때는 pk가 작은게 1, pk가 큰게 2로 넣는다.
+                # model에 player를 입력할때는 pk가 작은게 player1, pk가 큰게 player2로 넣는다.
                 if player1.pk < player2.pk:
                     model.player1, model.player2 = player1, player2
-                    # model.team1, model.team2 = team1, team2
                 else:
+                    # 점수, 팀, 스코어를 뒤집어서 넣어준다.
                     model.player1, model.player2 = player2, player1
                     model.team1, model.team2 = model.team2, model.team1
-                    # 점수도 뒤집어줘야 한다.
                     model.score1, model.score2 = model.score2, model.score1
-                model.save()
 
+                model.save()
                 response_data = {}
                 response_data['pk'] = model.pk
 
@@ -114,9 +119,9 @@ def detail(request, pk1, pk2):
 
         # pk 값이 작은쪽이 늘 player1으로 만들어져있을 것이다.
         if pk1 < pk2:
-            matches = Match.objects.filter(player1=p1, player2=p2).order_by('-time')
+            matches = Match.objects.filter(player1=p1, player2=p2, accept=True).order_by('-time')
         else:
-            matches = Match.objects.filter(player1=p2, player2=p1).order_by('-time')
+            matches = Match.objects.filter(player1=p2, player2=p1, accept=True).order_by('-time')
 
         win, draw, defeat, GF, GA = 0, 0, 0, 0, 0
         for match in matches:

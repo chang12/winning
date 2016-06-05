@@ -1,0 +1,36 @@
+[33mad98547[m HEAD@{0}: commit: Modify: Match model에 accept이라는 field를 추가하고, 기본값으로 False를 줌
+[33m52939c4[m HEAD@{1}: commit: Modify: TIME_ZONE을 Asia/Seoul로 변경
+[33m21486f7[m HEAD@{2}: commit: Modify: 전적 생성과정 UX 2차 정립 및 구현
+[33m67977a0[m HEAD@{3}: commit: Modify: find 작업후에 다시 분기되도록 수정
+[33m37938f0[m HEAD@{4}: commit: Modify: 상대방 검색시 자동완성이 아니라 검색 결과를 ajax로 보여주도록 수정함
+[33ma3d9050[m HEAD@{5}: commit: Modify: 로그인 후 메인화면도 UI를 바꿔줌
+[33md8dc977[m HEAD@{6}: commit: Modify: 로그인 화면 일단락
+[33mfc68d7c[m HEAD@{7}: commit: Modify: 레이아웃 공통부분을 base.html로 뺌
+[33m3358630[m HEAD@{8}: commit: Add: 헤더/풋터 추가하고 메뉴버튼 기본구현 완료
+[33m65e3fe3[m HEAD@{9}: commit: Modify: 메인 화면에 배경 이미지 추가
+[33m5a68d5b[m HEAD@{10}: commit: Modify: 메인화면 작업 다시 시작후 일단락(배경 이미지 삽입 x)
+[33mf4e4424[m HEAD@{11}: commit: Modify: 상대방 찾기에서 staff 계정은 뜨지 않도록 함
+[33m13ad9f7[m HEAD@{12}: commit: Modify: 상대방이 나와의 전적 입력한것 안보이는 오류 수정
+[33mff88082[m HEAD@{13}: commit: Modify: 메인화면 디자인을 손보고, 나머지 페이지는 간단히 반응형으로
+[33m4392f52[m HEAD@{14}: commit: Add: detail 페이지에 경기당 평균 승점 상위 3팀도 보여줌
+[33m66e8255[m HEAD@{15}: commit: Modify: 상대 전적 페이지 기본정보 형식 수정
+[33mefad28b[m HEAD@{16}: commit: Modify: Match 생성시 team 고를때도 search/dropdown로 구현
+[33md8e77a0[m HEAD@{17}: commit: Modify: Match의 team1, team2 field를 ForeignKey로 변경
+[33md43c6af[m HEAD@{18}: commit: Add: Team 모델 추가
+[33ma39c12b[m HEAD@{19}: commit: Modify: 상대방 검색할때 search/dropdown 기능 추가
+[33m132e319[m HEAD@{20}: commit: Modify: find 목적에 따라 안내 메시지 달리하기
+[33maafbbfd[m HEAD@{21}: commit: Modify: match_new랑 detail view 둘다 find view를 거쳐가도록 수정
+[33m1945491[m HEAD@{22}: commit: Add: 최근 5경기 전적 기본구현
+[33m1d415e8[m HEAD@{23}: commit: Add: 총 득점/실점 기록 기본 구현
+[33m3ffdd3b[m HEAD@{24}: commit: Add: 상대 전적 승/무/패 기본 구현
+[33m6cf659d[m HEAD@{25}: commit: Modify: 자기자신이 포함된 전적만 열람할 수 있도록 수정함
+[33m0e91ffb[m HEAD@{26}: commit: Add: 전적확인 원하는 상대방 선택후 페이지 이동 구현
+[33m53650c6[m HEAD@{27}: commit: Add: Match 모델 생성 기능 1차 구현
+[33md2abaf8[m HEAD@{28}: commit: Add: 로그인/로그아웃 기본 구현
+[33m082d935[m HEAD@{29}: commit: Add: Sign Up 기능 구성(Form 에서 User, Profile 모델 생성)
+[33m166d2de[m HEAD@{30}: commit: Add: 메인화면 구성을위한 url 패턴 추가
+[33m11c1b9c[m HEAD@{31}: commit: Add: record App에 Match 모델 생성
+[33m05d309a[m HEAD@{32}: commit: Add: accounts App에 Profile 모델 생성
+[33m3d0357e[m HEAD@{33}: commit: Add: 계정관련 accounts App 생성
+[33mbb920f7[m HEAD@{34}: commit: Add: 메인기능을 위한 Django App 생성
+[33m9b07866[m HEAD@{35}: commit (initial): Add: Django Project 생성
