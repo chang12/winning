@@ -13,7 +13,9 @@
 {% endblock %}
 
 {% block script %}
-    $("label").remove();
-    $("#id_username").attr("placeholder", "이름");
-    $("#id_password").attr("placeholder", "비밀번호");
+    <script>
+        $("label").remove();
+        $("#id_username").attr("placeholder", "이름");
+        $("#id_password").attr("placeholder", "비밀번호");
+    </script>
 {% endblock %}

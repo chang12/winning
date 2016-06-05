@@ -91,6 +91,8 @@
                 font-size: 2.2vh;
             }
         </style>
+        {% block style %}
+        {% endblock %}
     </head>
     <body>
         <div class="header">
@@ -116,12 +118,13 @@
             <p>special thanks to <em>allieuslee</em> (a.k.a <em>Ask Django</em>)</p>
         </div>
         <script src="{% static "jquery-1.12.3.min.js" %}"></script>
+        <script src="{% static "jquery.csrf.js" %}"></script>
         <script>
             function myToggle() {
                 document.getElementById("myDropdown").classList.toggle("show");
             }
-            {% block script %}
-            {% endblock %}
         </script>
+        {% block script %}
+        {% endblock %}
     </body>
 </html>

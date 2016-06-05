@@ -1,39 +1,98 @@
+{% extends "record/base.html" %}
 {% load staticfiles %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block style %}
     <!-- Semantic UI Core CSS -->
-    <link href="{% static "semantic.min.css" %}" rel="stylesheet">
-</head>
-<body>
-    <form class="ui form" action="" method="POST">
+    {# <link href="{% static "semantic.min.css" %}" rel="stylesheet"> #}
+{% endblock %}
+
+{% block title %}
+    전적 추가
+{% endblock %}
+
+{% block main %}
+    <form action="{% url 'record:match_show' %}" method="POST" id="show-form">
         {% csrf_token %}
-        <div class="field">
-            <label>팀 선택</label>
-            <select class="ui search dropdown" name="team1">
-                <option value="">팀 검색1</option>
-                {% for team in teams %}
-                    <option value={{team.pk}}>{{team.teamname}}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="field">
-            <label>팀 선택</label>
-            <select class="ui search dropdown" name="team2">
-                <option value="">팀 검색2</option>
-                {% for team in teams %}
-                    <option value={{team.pk}}>{{team.teamname}}</option>
-                {% endfor %}
-            </select>
-        </div>
         {{ form|linebreaks }}
-        <button class="ui button" type="submit">Submit</button>
+        <button type="submit">전적 추가</button>
     </form>
-    <!-- Semantic UI Core JS with jQuery-->
-    <script src="{% static "jquery-1.12.3.min.js" %}"></script>
-    <script src="{% static "semantic.min.js" %}"></script>
-    <script> $("select.dropdown").dropdown(); </script>
-</body>
-</html>
+
+    <div id="bottom-line" style="display: none;"></div>
+
+    <form action="" method="POST" id="create-form" style="display: none;">
+        <button><span id="match-num"></span>개의 전적 생성</button>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <script>
+        var match_id = 1;
+        var match_num = 0;
+        var match_dict = {};
+
+        $("#show-form").on("submit", function(event){
+            // Prevents the default browser behavior for a form submission.
+            event.preventDefault();
+            // view와 소통하는 채널이 2가지다.
+            // show_match()와 create_match() 이다.
+            // validation을 어디에 위치시킬지는 향후에 생각해보자.
+            show_match();
+        });
+
+        $("#create-form").on("submit", function(event){
+            // Prevent the default browser behavior for a form submission.
+            event.preventDefault();
+            for (var key in match_dict) {
+                create_match(match_dict[key]);
+            }
+        })
+
+        // match model의 생성 요청을 보내기에 앞서, 유저가 만든 match를 일단 HTML 문서에 보여준다.
+        function show_match() {
+            $.ajax({
+                // AJAX로 비동기적으로 form data를 담당 view에게 보낸다.
+                // view에서 HTML rendering 할 때 id를 매겨줘야한다.
+                // 그러니 serialize 하고 뒤에 argument를 하나 덧붙인다.
+                url: $("#show-form").attr("action"),
+                type : "POST",
+                data : $("#show-form").serialize()+"&id="+(match_id),
+            }).done(function(html) {
+                // AJAX call이 종료된 후에는,
+                // 1) 향후 create를 위해서 dictionary에 값을 담고,
+                match_dict["match-"+match_id] = $("#show-form").serialize();
+                // 2) view가 rendering 해준 html을 덧붙이고,
+                $("#bottom-line").before(html);
+                // 3) 다음 rendering을 위해서 match_id 전역변수의 값을 증가시키고,
+                match_id++;
+                // 4) form에 입력된 내용들을 지운다.
+                $("#show-form")[0].reset();
+                // 5) match_num 값을 증가시키고 create 버튼 작업을 한다.
+                match_num++;
+                if(match_num==1) $("#create-form").css("display", "block");
+                $("#match-num").text(match_num);
+            });
+        }
+
+        // view에게 data를 순차적으로 보내서,
+        function create_match(match) {
+            $.ajax({
+                url: $("#create-form").attr("action"),
+                type : "POST",
+                data : match,
+            }).done(function() {
+            });
+        };
+
+        function cancel_match(id) {
+            // HTML 문서 상에서 지운다.
+            $("#"+id).remove();
+            // dictionary에서 지운다.
+            delete match_dict[id];
+            // match_num 값을 줄이고 갱신한다. 만약 0개라면 create 호출하는 버튼을 제거한다.
+            match_num--;
+            $("#match-num").text(match_num);
+            if(match_num==0) $("#create-form").css("display", "none");
+        }
+
+    </script>
+{% endblock %}

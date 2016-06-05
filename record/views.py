@@ -1,7 +1,10 @@
+import json
+
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 from .forms import MatchForm, RivalForm
@@ -17,31 +20,53 @@ def index(request):
     })
 
 @login_required
-def match_new(request):
+def match_show(request):
     if request.method == 'POST':
         form = MatchForm(request.POST)
         if form.is_valid():
             model = form.save(commit=False)
-            player1, player2 = request.user, User.objects.get(pk=int(request.GET['rival']))
-            team1, team2 = Team.objects.get(pk=request.POST['team1']), Team.objects.get(pk=request.POST['team2'])
-            # model에 player를 입력할때는 pk가 작은게 1, pk가 큰게 2로 넣는다.
-            if player1.pk < player2.pk:
-                model.player1, model.player2 = player1, player2
-                model.team1, model.team2 = team1, team2
-            else:
-                model.player1, model.player2 = player2, player1
-                model.team1, model.team2 = team2, team1
-                # 점수도 뒤집어줘야 한다.
-                model.score1, model.score2 = model.score2, model.score1
-            model.save()
-        return redirect('record:index')
+            match_id = "match-"+request.POST['id']
+            return render(request, 'record/match_show.html', {
+                "model": model,
+                "match_id": match_id,
+            })
+    else:
+        pass
+
+@login_required
+def match_new(request):
+    # request.method 로 분기한다.
+    if request.method == 'POST':
+        form = MatchForm(request.POST)
+        if form.is_valid():
+            form = MatchForm(request.POST)
+            if form.is_valid():
+                model = form.save(commit=False)
+                player1, player2 = request.user, User.objects.get(pk=int(request.GET['rival']))
+
+                # model에 player를 입력할때는 pk가 작은게 1, pk가 큰게 2로 넣는다.
+                if player1.pk < player2.pk:
+                    model.player1, model.player2 = player1, player2
+                    # model.team1, model.team2 = team1, team2
+                else:
+                    model.player1, model.player2 = player2, player1
+                    model.team1, model.team2 = model.team2, model.team1
+                    # 점수도 뒤집어줘야 한다.
+                    model.score1, model.score2 = model.score2, model.score1
+                model.save()
+
+                response_data = {}
+                response_data['pk'] = model.pk
+
+            return JsonResponse(response_data)
     else:
         form = MatchForm()
-        teams = Team.objects.all()
-        return render(request, 'record/match_new.html', {
-            'form': form,
-            'teams': teams,
-        })
+        teams = Team.objects.all().order_by('teamname')
+
+    return render(request, 'record/match_new.html', {
+        'form': form,
+        'teams': teams,
+    })
 
 @login_required
 def find(request, mode):
@@ -60,6 +85,7 @@ def find(request, mode):
             'rival': rival,
             'button_text': button_text,
         })
+
     elif request.method == 'POST':
         # flag = int(request.GET['flag'])
         pk1 = request.user.pk
