@@ -47,17 +47,18 @@ def match_new(request):
             if form.is_valid():
                 model = form.save(commit=False)
                 # 상대방이 승인하기전이므로 False로 넣는다.
-                model.accept = False
                 player1, player2 = request.user, User.objects.get(pk=int(request.GET['rival']))
 
                 # model에 player를 입력할때는 pk가 작은게 player1, pk가 큰게 player2로 넣는다.
                 if player1.pk < player2.pk:
                     model.player1, model.player2 = player1, player2
+                    model.accept1, model.accept2 = True, False
                 else:
                     # 점수, 팀, 스코어를 뒤집어서 넣어준다.
                     model.player1, model.player2 = player2, player1
                     model.team1, model.team2 = model.team2, model.team1
                     model.score1, model.score2 = model.score2, model.score1
+                    model.accept1, model.accept2 = False, True
 
                 model.save()
                 response_data = {}
@@ -119,9 +120,9 @@ def detail(request, pk1, pk2):
 
         # pk 값이 작은쪽이 늘 player1으로 만들어져있을 것이다.
         if pk1 < pk2:
-            matches = Match.objects.filter(player1=p1, player2=p2, accept=True).order_by('-time')
+            matches = Match.objects.filter(player1=p1, player2=p2, accept1=True, accept2=True).order_by('-time')
         else:
-            matches = Match.objects.filter(player1=p2, player2=p1, accept=True).order_by('-time')
+            matches = Match.objects.filter(player1=p2, player2=p1, accept1=True, accept2=True).order_by('-time')
 
         win, draw, defeat, GF, GA = 0, 0, 0, 0, 0
         for match in matches:
