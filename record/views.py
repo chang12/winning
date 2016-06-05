@@ -87,7 +87,6 @@ def find(request, mode):
         })
 
     elif request.method == 'POST':
-        # flag = int(request.GET['flag'])
         pk1 = request.user.pk
         pk2 = int(request.POST['id'])
         # 전적 생성이 요청된 경우.

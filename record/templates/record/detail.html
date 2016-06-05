@@ -8,7 +8,6 @@
 <p>{{ GF }}득점 {{ GA }}실점</p>
 <p><B>최근 5경기 전적</B> ({{ curr_five }})</p>
 {% for match in last_five %}
-    {{match.time}}
     {% if pk1_is_smaller %}
         <p>{{ match.team1 }} <B>{{ match.score1 }}</B> vs <B>{{ match.score2 }}</B> {{ match.team2 }}</p>
     {% else %}
