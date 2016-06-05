@@ -7,6 +7,20 @@
 
 {% block main %}
     <p>총 건의 매치가 상대방의 승인을 기다리고 있습니다.</p>
+    {% for match in matches_by_me %}
+        {% if match.player1.pk == request.user.pk %}
+            (vs {{match.player2}}) {{match.team1}} {{match.score1}} vs {{match.score2}} {{match.team2}} {{match.time}}<br>
+        {% else %}
+            (vs {{match.player1}}) {{match.team2}} {{match.score2}} vs {{match.score1}} {{match.team1}} {{match.time}}<br>
+        {% endif %}
+    {% endfor %}
     <hr/>
     <p>총 건의 매치가 {{request.user.username}}님의 승인을 기다리고 있습니다.</p>
+    {% for match in matches_to_me %}
+        {% if match.player1.pk == request.user.pk %}
+            (vs {{match.player2}}) {{match.team1}} {{match.score1}} vs {{match.score2}} {{match.team2}} {{match.time}}<br>
+        {% else %}
+            (vs {{match.player1}}) {{match.team2}} {{match.score2}} vs {{match.score1}} {{match.team1}} {{match.time}}<br>
+        {% endif %}
+    {% endfor %}
 {% endblock %}

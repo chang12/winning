@@ -21,7 +21,14 @@ def index(request):
 
 @login_required
 def profile(request):
-    return render(request, "record/profile.html")
+    # 내가 player1이고 accept2가 False 혹은 내가 player2이고 accept1이 False
+    matches_by_me = Match.objects.filter(Q(player1=request.user, accept2=False)|Q(player2=request.user, accept1=False)).order_by('time')
+    # 내가 player1이고 accept1이 False 혹은 내가 player2이고 accept2가 False
+    matches_to_me = Match.objects.filter(Q(player1=request.user, accept1=False)|Q(player2=request.user, accept2=False)).order_by('time')
+    return render(request, "record/profile.html", {
+        "matches_by_me": matches_by_me,
+        "matches_to_me": matches_to_me,
+    })
 
 @login_required
 def match_show(request):
