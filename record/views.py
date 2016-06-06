@@ -38,6 +38,14 @@ def match_cancel(request):
         return redirect('record:profile')
 
 @login_required
+def match_accept(request):
+    if request.method == 'POST':
+        model = Match.objects.get(pk=request.POST['pk'])
+        model.accept1, model.accept2 = True, True
+        model.save()
+        return redirect('record:profile')
+
+@login_required
 def match_show(request):
     if request.method == 'POST':
         form = MatchForm(request.POST)
