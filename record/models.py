@@ -21,6 +21,7 @@ class Match(models.Model):
     score2 = models.IntegerField()
     accept1 = models.BooleanField()
     accept2 = models.BooleanField()
+    reject = models.BooleanField()
 
     def __str__(self):
         return self.player1.username+' '+self.player2.username+' ('+str(self.time)+')'

@@ -7,7 +7,7 @@ class MatchForm(ModelForm):
     class Meta:
         # Meta class describes "anything that's not a field".
         model = Match
-        exclude = ['player1', 'player2', 'time', 'accept1', 'accept2']
+        exclude = ['player1', 'player2', 'time', 'accept1', 'accept2', 'reject']
 
 
 class RivalForm(ModelForm):

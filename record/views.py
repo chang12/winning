@@ -14,7 +14,7 @@ from .utils import getkey
 # Create your views here.
 def index(request):
     try:
-        matches_to_me = Match.objects.filter(Q(player1=request.user, accept1=False)|Q(player2=request.user, accept2=False)).order_by('time')
+        matches_to_me = Match.objects.filter(Q(player1=request.user, accept1=False, accept2=True)|Q(player2=request.user, accept1=True, accept2=False)).filter(reject=False).order_by('time')
         num = len(matches_to_me)
     except:
         num = 0
@@ -25,12 +25,15 @@ def index(request):
 @login_required
 def profile(request):
     # 내가 player1이고 accept2가 False 혹은 내가 player2이고 accept1이 False
-    matches_by_me = Match.objects.filter(Q(player1=request.user, accept2=False)|Q(player2=request.user, accept1=False)).order_by('time')
+    matches_by_me = Match.objects.filter(Q(player1=request.user, accept1= True, accept2=False)|Q(player2=request.user, accept1=False, accept2=True)).filter(reject=False).order_by('time')
     # 내가 player1이고 accept1이 False 혹은 내가 player2이고 accept2가 False
-    matches_to_me = Match.objects.filter(Q(player1=request.user, accept1=False)|Q(player2=request.user, accept2=False)).order_by('time')
+    matches_to_me = Match.objects.filter(Q(player1=request.user, accept1=False, accept2=True)|Q(player2=request.user, accept1=True, accept2=False)).filter(reject=False).order_by('time')
+    # 내가 player1 혹은 player2이고 accept은 둘 다 False
+    matches_rejected = Match.objects.filter(Q(player1=request.user, accept1= True, accept2=False)|Q(player2=request.user, accept1=False, accept2=True)).filter(reject=True).order_by('time')
     return render(request, "record/profile.html", {
         "matches_by_me": matches_by_me,
         "matches_to_me": matches_to_me,
+        "matches_rejected": matches_rejected,
     })
 
 @login_required
@@ -45,6 +48,14 @@ def match_accept(request):
     if request.method == 'POST':
         model = Match.objects.get(pk=request.POST['pk'])
         model.accept1, model.accept2 = True, True
+        model.save()
+        return redirect('record:profile')
+
+@login_required
+def match_reject(request):
+    if request.method == 'POST':
+        model = Match.objects.get(pk=request.POST['pk'])
+        model.reject = True
         model.save()
         return redirect('record:profile')
 
@@ -71,7 +82,8 @@ def match_new(request):
             form = MatchForm(request.POST)
             if form.is_valid():
                 model = form.save(commit=False)
-                # 상대방이 승인하기전이므로 False로 넣는다.
+                # 전적 생성 직후에 reject 값은 False 이다.
+                model.reject = False
                 player1, player2 = request.user, User.objects.get(pk=int(request.GET['rival']))
 
                 # model에 player를 입력할때는 pk가 작은게 player1, pk가 큰게 player2로 넣는다.
