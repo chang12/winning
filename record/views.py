@@ -13,10 +13,13 @@ from .utils import getkey
 
 # Create your views here.
 def index(request):
-    pk = request.user.pk
-    users = User.objects.filter(~Q(pk = pk))
+    try:
+        matches_to_me = Match.objects.filter(Q(player1=request.user, accept1=False)|Q(player2=request.user, accept2=False)).order_by('time')
+        num = len(matches_to_me)
+    except:
+        num = 0
     return render(request, 'record/index.html', {
-        'users': users,
+        'num': num,
     })
 
 @login_required

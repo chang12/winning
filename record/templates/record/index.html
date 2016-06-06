@@ -39,11 +39,20 @@
             background-color: black;
             /*padding-top: 10%;*/
         }
+        .main-alarm {
+            text-align: center;
+            color: white;
+            font-size: 2vh;
+        }
+        .main-alarm > a {
+            color: white;
+            text-decoration: underline;
+        }
         .main-title {
             width: 90%;
             margin-left: 5vw;
             margin-right: 5vw;
-            margin-top: 20vh;
+            margin-top: 15vh;
             margin-bottom: 0vh;
             text-align: center;
             color: white;
@@ -87,6 +96,9 @@
     <div class="background"></div>
     <div class="main">
         {% if user.is_authenticated %}
+            {% if num != 0 %}
+            <p class="main-alarm"><a href="{% url "record:profile" %}">{{num}}</a>건의 매치가 승인 대기중입니다</p>
+            {% endif %}
             <p class="main-title">{{user.username}}님<br>환영합니다!</p>
             <p class="main-content"></p>
             <form action="{% url "logout" %}">
