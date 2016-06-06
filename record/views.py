@@ -60,6 +60,14 @@ def match_reject(request):
         return redirect('record:profile')
 
 @login_required
+def match_resend(request):
+    if request.method == 'POST':
+        model = Match.objects.get(pk=request.POST['pk'])
+        model.reject = False
+        model.save()
+        return redirect('record:profile')
+
+@login_required
 def match_show(request):
     if request.method == 'POST':
         form = MatchForm(request.POST)

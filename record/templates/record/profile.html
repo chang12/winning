@@ -15,7 +15,7 @@
             (vs {{match.player1}}) {{match.team2}} {{match.score2}} vs {{match.score1}} {{match.team1}} {{match.time}}
         {% endif %}
         <span onclick="accept_match({{match.pk}})">승인 </span>
-        <span onclick="reject_match({{match.pk}})">취소 </span>
+        <span onclick="reject_match({{match.pk}})">거절 </span>
         </div>
     {% endfor %}
     <hr/>
@@ -27,7 +27,7 @@
         {% else %}
             (vs {{match.player1}}) {{match.team2}} {{match.score2}} vs {{match.score1}} {{match.team1}} {{match.time}}
         {% endif %}
-        <span onclick="cancel_match({{match.pk}})">취소</span>
+        <span onclick="cancel_match({{match.pk}}, false)">취소</span>
         </div>
     {% endfor %}
     <p>총 <span id="num_rejected">{{matches_rejected|length}}</span>건의 매치를 상대방이 승인 거절 하였습니다.</p>
@@ -38,14 +38,15 @@
         {% else %}
             (vs {{match.player1}}) {{match.team2}} {{match.score2}} vs {{match.score1}} {{match.team1}} {{match.time}}
         {% endif %}
-        <span onclick="cancel_match({{match.pk}})">취소</span>
+        <span onclick="cancel_match({{match.pk}}, true)">취소 </span>
+        <span onclick="resend_match({{match.pk}})">재요청 </span>
         </div>
     {% endfor %}
 {% endblock %}
 
 {% block script %}
 <script>
-    function cancel_match(pk) {
+    function cancel_match(pk, reject) {
         $.ajax({
             url: "{% url 'record:match_cancel' %}",
             method: "POST",
@@ -56,8 +57,14 @@
             // 페이지에서 해당 match를 삭제한다.
             $("#"+pk).remove();
             // 건수를 하나 감소시킨다.
-            var num = $("#num_by_me").text();
-            $("#num_by_me").text(num-1);
+            if (reject) {
+                var num = $("#num_rejected").text();
+                $("#num_rejected").text(num-1);
+            }
+            else {
+                var num = $("#num_by_me").text();
+                $("#num_by_me").text(num-1);
+            }
         })
     }
 
@@ -90,6 +97,23 @@
             // 건수를 하나 감소시킨다.
             var num = $("#num_to_me").text();
             $("#num_to_me").text(num-1);
+        })
+    }
+
+    function resend_match(pk) {
+        $.ajax({
+            url: "{% url 'record:match_resend' %}",
+            method: "POST",
+            data: {
+                pk: pk,
+            }
+        }).done(function(){
+            // // 페이지에서 해당 match를 삭제한다.
+            // $("#"+pk).remove();
+            // // 건수를 하나 감소시킨다.
+            // var num = $("#num_rejected").text();
+            // $("#num_rejected").text(num-1);
+            location.reload();
         })
     }
 
