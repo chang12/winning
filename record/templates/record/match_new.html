@@ -45,6 +45,15 @@
             for (var key in match_dict) {
                 create_match(match_dict[key]);
             }
+            // 이 부분에 리셋하는 코드가 들어가야겠군.
+            // 우선 form을 리셋하고,
+            $("#show-form")[0].reset();
+            // 전적생성 요청버튼을 안보이게 하고,
+            $("#create-form").css("display", "none");
+            // 전적생성 대기중인 전적들을 다 삭제한다.
+            $(".match").each(function(){
+                $(this).remove();
+            })
         })
 
         // match model의 생성 요청을 보내기에 앞서, 유저가 만든 match를 일단 HTML 문서에 보여준다.
@@ -79,8 +88,7 @@
                 url: $("#create-form").attr("action"),
                 type : "POST",
                 data : match,
-            }).done(function() {
-            });
+            })
         };
 
         function cancel_match(id) {
