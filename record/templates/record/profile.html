@@ -6,16 +6,19 @@
 {% endblock %}
 
 {% block main %}
-    <p>총 건의 매치가 상대방의 승인을 기다리고 있습니다.</p>
+    <p>총 <span id="num_by_me">{{matches_by_me|length}}</span>건의 매치가 상대방의 승인을 기다리고 있습니다.</p>
     {% for match in matches_by_me %}
+        <div id="{{match.pk}}">
         {% if match.player1.pk == request.user.pk %}
-            (vs {{match.player2}}) {{match.team1}} {{match.score1}} vs {{match.score2}} {{match.team2}} {{match.time}}<br>
+            (vs {{match.player2}}) {{match.team1}} {{match.score1}} vs {{match.score2}} {{match.team2}} {{match.time}}
         {% else %}
-            (vs {{match.player1}}) {{match.team2}} {{match.score2}} vs {{match.score1}} {{match.team1}} {{match.time}}<br>
+            (vs {{match.player1}}) {{match.team2}} {{match.score2}} vs {{match.score1}} {{match.team1}} {{match.time}}
         {% endif %}
+        <span onclick="cancel_match({{match.pk}})">취소</span>
+        </div>
     {% endfor %}
     <hr/>
-    <p>총 건의 매치가 {{request.user.username}}님의 승인을 기다리고 있습니다.</p>
+    <p>총 {{matches_to_me|length}}건의 매치가 {{request.user.username}}님의 승인을 기다리고 있습니다.</p>
     {% for match in matches_to_me %}
         {% if match.player1.pk == request.user.pk %}
             (vs {{match.player2}}) {{match.team1}} {{match.score1}} vs {{match.score2}} {{match.team2}} {{match.time}}<br>
@@ -23,4 +26,24 @@
             (vs {{match.player1}}) {{match.team2}} {{match.score2}} vs {{match.score1}} {{match.team1}} {{match.time}}<br>
         {% endif %}
     {% endfor %}
+{% endblock %}
+
+{% block script %}
+<script>
+    function cancel_match(pk) {
+        $.ajax({
+            url: "{% url 'record:match_cancel' %}",
+            method: "POST",
+            data: {
+                pk: pk,
+            }
+        }).done(function(){
+            // 페이지에서 해당 match를 삭제한다.
+            $("#"+pk).remove();
+            // 건수를 하나 감소시킨다.
+            var num = $("#num_by_me").text();
+            $("#num_by_me").text(num-1);
+        })
+    }
+</script>
 {% endblock %}

@@ -31,6 +31,13 @@ def profile(request):
     })
 
 @login_required
+def match_cancel(request):
+    if request.method == 'POST':
+        model = Match.objects.get(pk=request.POST['pk'])
+        model.delete()
+        return redirect('record:profile')
+
+@login_required
 def match_show(request):
     if request.method == 'POST':
         form = MatchForm(request.POST)
