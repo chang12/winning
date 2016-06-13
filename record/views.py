@@ -1,20 +1,22 @@
-import json
-
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
-from .forms import MatchForm, RivalForm
+from .forms import MatchForm
 from .models import Match, Team
 from .utils import getkey
+
 
 # Create your views here.
 def index(request):
     try:
-        matches_to_me = Match.objects.filter(Q(player1=request.user, accept1=False, accept2=True)|Q(player2=request.user, accept1=True, accept2=False)).filter(reject=False).order_by('time')
+        Q1 = Q(player1=request.user, accept1=False, accept2=True)
+        Q2 = Q(player2=request.user, accept1=True, accept2=False)
+        matches_to_me = Match.objects.filter(Q1 | Q2)
+        matches_to_me = matches_to_me.filter(reject=False).order_by('time')
         num = len(matches_to_me)
     except:
         num = 0
@@ -22,19 +24,31 @@ def index(request):
         'num': num,
     })
 
+
 @login_required
 def profile(request):
     # 내가 player1이고 accept2가 False 혹은 내가 player2이고 accept1이 False
-    matches_by_me = Match.objects.filter(Q(player1=request.user, accept1= True, accept2=False)|Q(player2=request.user, accept1=False, accept2=True)).filter(reject=False).order_by('time')
+    Q1_by_me = Q(player1=request.user, accept1=True, accept2=False)
+    Q2_by_me = Q(player2=request.user, accept1=False, accept2=True)
+    matches_by_me = Match.objects.filter(Q1_by_me | Q2_by_me)
+    matches_by_me = matches_by_me.filter(reject=False).order_by('time')
     # 내가 player1이고 accept1이 False 혹은 내가 player2이고 accept2가 False
-    matches_to_me = Match.objects.filter(Q(player1=request.user, accept1=False, accept2=True)|Q(player2=request.user, accept1=True, accept2=False)).filter(reject=False).order_by('time')
+    Q1_to_me = Q(player1=request.user, accept1=False, accept2=True)
+    Q2_to_me = Q(player2=request.user, accept1=True, accept2=False)
+    matches_to_me = Match.objects.filter(Q1_to_me | Q2_to_me)
+    matches_to_me = matches_to_me.filter(reject=False).order_by('time')
     # 내가 player1 혹은 player2이고 accept은 둘 다 False
-    matches_rejected = Match.objects.filter(Q(player1=request.user, accept1= True, accept2=False)|Q(player2=request.user, accept1=False, accept2=True)).filter(reject=True).order_by('time')
+    Q1_rejected = Q(player1=request.user, accept1=True, accept2=False)
+    Q2_rejected = Q(player2=request.user, accept1=False, accept2=True)
+    matches_rejected = Match.objects.filter(Q1_rejected | Q2_rejected)
+    matches_rejected = matches_rejected.filter(reject=True).order_by('time')
+
     return render(request, "record/profile.html", {
         "matches_by_me": matches_by_me,
         "matches_to_me": matches_to_me,
         "matches_rejected": matches_rejected,
     })
+
 
 @login_required
 def match_cancel(request):
@@ -42,6 +56,7 @@ def match_cancel(request):
         model = Match.objects.get(pk=request.POST['pk'])
         model.delete()
         return redirect('record:profile')
+
 
 @login_required
 def match_accept(request):
@@ -51,6 +66,7 @@ def match_accept(request):
         model.save()
         return redirect('record:profile')
 
+
 @login_required
 def match_reject(request):
     if request.method == 'POST':
@@ -59,6 +75,7 @@ def match_reject(request):
         model.save()
         return redirect('record:profile')
 
+
 @login_required
 def match_resend(request):
     if request.method == 'POST':
@@ -66,6 +83,7 @@ def match_resend(request):
         model.reject = False
         model.save()
         return redirect('record:profile')
+
 
 @login_required
 def match_show(request):
@@ -81,6 +99,7 @@ def match_show(request):
     else:
         pass
 
+
 @login_required
 def match_new(request):
     # request.method 로 분기한다.
@@ -92,7 +111,8 @@ def match_new(request):
                 model = form.save(commit=False)
                 # 전적 생성 직후에 reject 값은 False 이다.
                 model.reject = False
-                player1, player2 = request.user, User.objects.get(pk=int(request.GET['rival']))
+                player1 = request.user
+                player2 = User.objects.get(pk=int(request.GET['rival']))
 
                 # model에 player를 입력할때는 pk가 작은게 player1, pk가 큰게 player2로 넣는다.
                 if player1.pk < player2.pk:
@@ -119,6 +139,7 @@ def match_new(request):
         'teams': teams,
     })
 
+
 @login_required
 def find(request, mode):
     if request.is_ajax():
@@ -132,7 +153,7 @@ def find(request, mode):
             button_text = "전적 추가하러 가기"
         elif mode == "detail":
             button_text = "전적 확인하러 가기"
-        return render(request, 'record/findresult.html',{
+        return render(request, 'record/findresult.html', {
             'rival': rival,
             'button_text': button_text,
         })
@@ -164,21 +185,23 @@ def detail(request, pk1, pk2):
         p1, p2 = User.objects.get(pk=pk1), User.objects.get(pk=pk2)
 
         # pk 값이 작은쪽이 늘 player1으로 만들어져있을 것이다.
+        matches = Match.objects.filter(accept1=True, accept2=True)
         if pk1 < pk2:
-            matches = Match.objects.filter(player1=p1, player2=p2, accept1=True, accept2=True).order_by('-time')
+            matches = matches.filter(player1=p1, player2=p2).order_by('-time')
+
         else:
-            matches = Match.objects.filter(player1=p2, player2=p1, accept1=True, accept2=True).order_by('-time')
+            matches = matches.filter(player1=p2, player2=p1).order_by('-time')
 
         win, draw, defeat, GF, GA = 0, 0, 0, 0, 0
         for match in matches:
             GF = GF + match.score1
             GA = GA + match.score2
             if match.score1 > match.score2:
-                win = win + 1;
+                win = win + 1
             elif match.score1 < match.score2:
-                defeat = defeat + 1;
+                defeat = defeat + 1
             else:
-                draw = draw + 1;
+                draw = draw + 1
         # pk1이 더 크다면, 뒤집어줄 것을 뒤집어준다.
         if pk1 > pk2:
             win, defeat, GF, GA = defeat, win, GA, GF
@@ -203,11 +226,12 @@ def detail(request, pk1, pk2):
                     curr_five = '무' + curr_five
 
         if pk1 < pk2:
-            team1s = Match.objects.filter(player1=p1, player2=p2).values('team1').distinct()
+            Q_1s = Q(player1=p1, player2=p2)
+            team1s = Match.objects.filter(Q_1s).values('team1').distinct()
             infos = []
             for team1 in team1s:
                 team = Team.objects.get(pk=team1['team1'])
-                matches = Match.objects.filter(player1=p1, player2=p2, team1=team)
+                matches = Match.objects.filter(Q_1s).filter(team1=team)
                 if len(matches) >= 3:
                     twin, tdraw, tdefeat = 0, 0, 0
                     for m in matches:
@@ -219,11 +243,12 @@ def detail(request, pk1, pk2):
             # point 내림차순으로 정렬.
             infos.sort(key=getkey, reverse=True)
         else:
-            team2s = Match.objects.filter(player1=p2, player2=p1).values('team2').distinct()
+            Q_2s = Q(player1=p2, player2=p1)
+            team2s = Match.objects.filter(Q_2s).values('team2').distinct()
             infos = []
             for team2 in team2s:
                 team = Team.objects.get(pk=team2['team2'])
-                matches = Match.objects.filter(player1=p2, player2=p1, team2=team)
+                matches = Match.objects.filter(Q_2s).filter(team2=team)
                 if len(matches) >= 3:
                     twin, tdraw, tdefeat = 0, 0, 0
                     for m in matches:
