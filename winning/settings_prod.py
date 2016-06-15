@@ -1,8 +1,8 @@
 from .settings import *
 import os
 
-password = os.environ['password']
-SECRET_KEY = os.environ['SECRET_KEY']
+password = os.environ['PASSWORD']
+# SECRET_KEY = os.environ['SECRET_KEY']
 
 DEBUG = False
 ALLOWED_HOSTS = ['*']
@@ -10,9 +10,10 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'winning',
-        'USER': 'ubuntu',
+        'NAME': 'winning_db',
+        'USER': 'winning_admin',
         'PASSWORD': password,
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
