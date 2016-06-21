@@ -98,6 +98,30 @@
         .show {
             display: block;
         }
+
+        .message {
+            padding: 20px;
+            color: white;
+            opacity: 1;
+            transition: opacity 0.6s;
+            margin-bottom: 15px;
+        }
+        .message.success {background-color: #4CAF50;}
+        .message.info {background-color: #2196F3;}
+        .message.warning {background-color: #ff9800;}
+        .closebtn {
+            margin-left: 15px;
+            color: white;
+            font-weight: bold;
+            float: right;
+            font-size: 22px;
+            line-height: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .closebtn:hover {
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -125,6 +149,14 @@
                 <button>상대전적 확인</button>
             </form>
         {% else %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="message {{message.tags}}">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                {{message}}
+            </div>
+            {% endfor %}
+            {% endif %}
             <p class="main-title">Winning</p>
             <p class="main-content">당신의 게임을 기록하세요. <br>그리고 더 많은 승리를 쟁취하세요.</p>
             <form action="{% url "accounts:signup" %}" method="POST" id="form-signup">
