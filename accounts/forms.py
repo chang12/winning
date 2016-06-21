@@ -1,15 +1,16 @@
-from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 from .models import Profile
+
 
 class MyAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(MyAuthenticationForm, self).__init__(*args, **kwargs)
         for field in self.fields:
-            self.fields[field].label=''
+            self.fields[field].label = ''
         self.fields['username'].widget.attrs['placeholder'] = '이름'
         self.fields['password'].widget.attrs['placeholder'] = '비밀번호'
+
 
 class MyUserCreationForm(UserCreationForm):
 
@@ -33,10 +34,9 @@ class MyUserCreationForm(UserCreationForm):
         super(MyUserCreationForm, self).__init__(*args, **kwargs)
         # 각 input 태그의 help_text, label을 제거함.
         for field in self.fields:
-            self.fields[field].help_text=None
-            self.fields[field].label=''
+            self.fields[field].help_text = None
+            self.fields[field].label = ''
         # 각 input 태그에 placeholder를 추가함.
         self.fields['username'].widget.attrs['placeholder'] = "이름"
         self.fields['password1'].widget.attrs['placeholder'] = "비밀번호"
         self.fields['password2'].widget.attrs['placeholder'] = "비밀번호 확인"
-

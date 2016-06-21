@@ -1,10 +1,9 @@
 from .settings import *
-import os
 
-password = os.environ['PASSWORD']
+# password = os.environ['PASSWORD']
 # SECRET_KEY = os.environ['SECRET_KEY']
 
-DEBUG = False
+# DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 DATABASES = {

@@ -10,26 +10,7 @@
     {# <link href="{% static "icon.min.css" %}" rel="stylesheet"> #}
     <!-- Style Tag for image -->
     <style>
-        .header {
-            width: 100%;
-            height: 10%;
-            background-color: red;
-        }
-        .container {
-            width: 100%;
-            position: relative;
-        }
-        .main-image {
-            z-index: 0;
-            width: 100%;
-            height: auto;
-            /*display: table-row;*/
-            position: absolute;
-            -webkit-filter: blur(7px) grayscale(80%);
-        }
         body, html{
-            /*display: table;*/
-            /*overflow: hidden;*/
             width: 100%;
             height: 100%;
             margin: 0px;
@@ -56,44 +37,73 @@
             margin-bottom: 0vh;
             text-align: center;
             color: white;
-            font-size: 7.5vw;
+            font-size: 20vw;
             font-weight: bold;
         }
         .main-content {
             width: 80%;
             margin-left: 10vw;
             margin-right: 10vw;
-            margin-top: 5vh;
-            margin-bottom: 10vh;
+            margin-top: 0vh;
+            margin-bottom: 5vh;
+            text-align: center;
             color: white;
-            font-size: 4vw;
+            font-size: 4.5vw;
             /*text-align: center;*/
         }
         button {
             width: 60vw;
-            height: 10vh;
+            height: 6vh;
             margin-left: 20vw;
             margin-right: 20vw;
-            margin-bottom: 3vh;
-            font-size: 6vw;
+            margin-bottom: 1.5vh;
+            font-size: 4.5vw;
+            border: none;
+            border-radius: 1vw;
+            color: white;
+            display: none;
+        }
+        .button-signup, .button-signup-submit {
+            background-color: #008CBA;
+        }
+        .button-login {
+            background-color: #555555;
         }
         .background {
             z-index: 0;
             width: 100vw;
             height: 100vh;
-            background-image: url({% static "main.jpg" %});
-            -webkit-filter: blur(7px) grayscale(80%) opacity(100%);
+            /*background-image: url({% static "main.jpg" %});*/
+            /*-webkit-filter: blur(7px) grayscale(80%) opacity(100%);*/
         }
         .main {
             z-index: 1;
         }
         .main, .background {
-            position: absolute;
+            /*position: absolute;*/
+        }
+        form {
+            width: 60vw;
+            margin: auto;
+            display: none;
+        }
+        input {
+            /*padding: 3vw;*/
+            font-size: 4.5vw;
+            width: 100%;
+            height: 6vh;
+            border: none;
+            /*border-radius: 0.5vw;*/
+        }
+        .show {
+            display: block;
         }
     </style>
 </head>
 <body>
+    {% comment %}
     <div class="background"></div>
+    {% endcomment %}
     <div class="main">
         {% if user.is_authenticated %}
             {% if num != 0 %}
@@ -115,15 +125,33 @@
                 <button>상대전적 확인</button>
             </form>
         {% else %}
-            <p class="main-title">당신의 위닝을 기록하세요</p>
-            <p class="main-content">친구들과의 즐거운 게임 기록을 남겨보세요. 유저, 팀, 스코어를 기록할 수 있습니다. 간단한 통계 리포트를 확인하여 경쟁력을 향상시켜보세요.</p>
-            <form action="{% url "accounts:signup" %}">
-                <button>가입하여 시작하기</button>
+            <p class="main-title">Winning</p>
+            <p class="main-content">당신의 게임을 기록하세요. <br>그리고 더 많은 승리를 쟁취하세요.</p>
+            <form action="{% url "accounts:signup" %}" method="POST" id="form-signup">
+                {% csrf_token %}
+                {{form1|linebreaks}}
             </form>
-            <form action="{% url "login" %}">
-                <button>로그인</button>
-            </form>
+            <button class="button-signup show">시작하기</button>
+            <button class="button-signup-submit">가입</button>
+            <button class="button-login show" onclick="location.href='{% url "login" %}'">로그인</button>
         {% endif %}
     </div>
+    <script src="{% static "jquery-3.0.0.min.js" %}"></script>
+    <script type="text/javascript">
+        $(".button-signup").click(function(){
+            // 자기 자신을 없앤다.
+            $(this).toggleClass("show");
+            // 로그인 버튼을 없앤다.
+            $(".button-login").toggleClass("show");
+            // 가입 버튼을 보이게 한다.
+            $(".button-signup-submit").toggleClass("show");
+            // Signup Form을 보이게 한다.
+            $("#form-signup").slideDown("slow");
+            // $("#form-signup").toggleClass("show");
+        });
+        $(".button-signup-submit").click(function(){
+            $("#form-signup").submit();
+        });
+    </script>
 </body>
 </html>

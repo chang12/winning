@@ -5,6 +5,8 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
+from accounts.forms import MyUserCreationForm
+
 from .forms import MatchForm
 from .models import Match, Team
 from .utils import getkey
@@ -20,8 +22,10 @@ def index(request):
         num = len(matches_to_me)
     except:
         num = 0
+    form1 = MyUserCreationForm
     return render(request, 'record/index.html', {
         'num': num,
+        'form1': form1,
     })
 
 
@@ -132,11 +136,11 @@ def match_new(request):
             return JsonResponse(response_data)
     else:
         form = MatchForm()
-        teams = Team.objects.all().order_by('teamname')
+        # teams = Team.objects.all().order_by('teamname')
 
     return render(request, 'record/match_new.html', {
         'form': form,
-        'teams': teams,
+        # 'teams': teams,
     })
 
 
