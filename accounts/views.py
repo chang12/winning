@@ -1,12 +1,18 @@
+from uuid import uuid4
+
+# from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
-# from .forms import MyUserCreationForm as UserCreationForm
+from winning import settings
+
 from .forms import MyUserCreationForm as UserCreationForm
+from .models import Token
 
 
 # Create your views here.
@@ -19,11 +25,30 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
 
+            # User를 생성한다.
             username = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password2')
             email = form.cleaned_data.get('email')
+            user = User.objects.create_user(username, email, password, is_active=False)
 
-            User.objects.create_user(username, email, password)
+            # Token을 생성해서 DB에 저장한다.
+            token = str(uuid4()) + '-' + str(user.pk)
+            Token(user=user, token=token).save()
+
+            # 메일 내용을 완성한다.
+            confirm_url = settings.DOMAIN_NAME + reverse('accounts:confirm', kwargs={'token': token})
+            title = "Winning 서비스의 인증 이메일입니다."
+            body = "<p>아래 링크를 클릭하여 계정 생성 과정을 완료해주세요.</p><a href=%s><p>%s</p></a>" % (confirm_url, confirm_url)
+
+            # 메일을 전송한다.
+            send_mail(
+                title,
+                body,
+                settings.EMAIL_HOST_USER,
+                [user.username],
+                html_message=body,
+            )
+
             messages.info(request, '인증 이메일이 발송되었습니다.')
             data = {}
             data['status'] = True
@@ -46,3 +71,18 @@ def signup(request):
     return render(request, 'accounts/signup.html', {
         'form': form,
     })
+
+def confirm(request, token):
+    try:
+        token = Token.objects.get(token=token)
+    except Token.DoesNotExist:
+        messages.warning(request, '유효하지 않은 인증 토큰입니다.')
+        return redirect('record:index')
+
+    user = token.user
+    user.is_active = True
+    user.save()
+    token.delete()
+
+    messages.info(request, '인증이 완료되었습니다. 로그인하세요.')
+    return redirect('record:index')

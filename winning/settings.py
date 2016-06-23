@@ -15,6 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 password = os.environ['PASSWORD']
+DOMAIN_NAME = "http://localhost:8000"
 
 
 # Quick-start development settings - unsuitable for production
@@ -140,3 +141,10 @@ STATICFILES_DIRS = [
 
 from django.core.urlresolvers import reverse_lazy
 LOGIN_REDIRECT_URL = reverse_lazy('record:index')
+
+# E-mail 관련된 세팅.
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'changhyunwinning@gmail.com'
+EMAIL_HOST_PASSWORD = password
