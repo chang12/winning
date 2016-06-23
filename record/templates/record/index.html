@@ -122,6 +122,21 @@
         .closebtn:hover {
             color: black;
         }
+        #form-error {
+            width: 60vw;
+            height: 6vh;
+            line-height: 6vh;
+            margin-left: 20vw;
+            margin-right: 20vw;
+            margin-bottom: 1.5vh;
+            background-color: red;
+            text-align: center;
+            color: white;
+            font-size: 3vw;
+            border: none;
+            border-radius: 1vw;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -163,6 +178,7 @@
                 {% csrf_token %}
                 {{form1|linebreaks}}
             </form>
+            <div id="form-error"></div>
             <button class="button-signup show">시작하기</button>
             <button class="button-signup-submit">가입</button>
             <button class="button-login show" onclick="location.href='{% url "login" %}'">로그인</button>
@@ -182,7 +198,26 @@
             // $("#form-signup").toggleClass("show");
         });
         $(".button-signup-submit").click(function(){
-            $("#form-signup").submit();
+            // $("#form-signup").submit();
+            $("#form-error").slideUp();
+            $("#form-error").text("");
+            $.ajax({
+                // AJAX로 비동기적으로 form data를 담당 view에게 보낸다.
+                url: $("#form-signup").attr("action"),
+                type : "POST",
+                data : $("#form-signup").serialize(),
+            }).done(function(response) {
+                if(response.status){
+                    $(location).attr("href", response.url)
+                }
+                else{
+                    $("#form-error").text(response.error);
+                    $("#form-error").slideDown();
+                }
+                // AJAX call이 종료된 후에 이 함수가 실행된다는 것은,
+                // redirection이 이뤄지지 않은 것이므로 Form에 error가 있었다는 것이다.
+                // error message를 띄워준다.
+            });
         });
     </script>
 </body>
