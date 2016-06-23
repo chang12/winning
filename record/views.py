@@ -5,7 +5,8 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
-from accounts.forms import MyUserCreationForm
+# from accounts.forms import MyUserCreationForm as UserCreationForm
+from accounts.forms import MyUserCreationForm as UserCreationForm
 
 from .forms import MatchForm
 from .models import Match, Team
@@ -22,7 +23,7 @@ def index(request):
         num = len(matches_to_me)
     except:
         num = 0
-    form1 = MyUserCreationForm
+    form1 = UserCreationForm()
     return render(request, 'record/index.html', {
         'num': num,
         'form1': form1,
