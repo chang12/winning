@@ -3,7 +3,9 @@ from uuid import uuid4
 # from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate
-from django.contrib.auth.views import login as auth_login
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
+# from django.contrib.auth.views import login as auth_login
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -60,6 +62,11 @@ def login(request):
     else:
         messages.warning(request, '유효하지 않은 접근입니다.')
         return redirect('record:index')
+
+
+def logout(request):
+    auth_logout(request)
+    return redirect('record:index')
 
 
 def signup(request):

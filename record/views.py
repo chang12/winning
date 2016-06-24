@@ -6,7 +6,8 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 # from accounts.forms import MyUserCreationForm as UserCreationForm
-from accounts.forms import MyUserCreationForm as UserCreationForm, MyAuthenticationForm as AuthenticationForm
+from accounts.forms import MyUserCreationForm as UserCreationForm
+from accounts.forms import MyAuthenticationForm as AuthenticationForm
 
 from .forms import MatchForm
 from .models import Match, Team
