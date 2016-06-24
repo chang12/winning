@@ -66,7 +66,7 @@
         .button-signup, .button-signup-submit {
             background-color: #008CBA;
         }
-        .button-login {
+        .button-login, .button-login-submit {
             background-color: #555555;
         }
         .background {
@@ -176,12 +176,17 @@
             <p class="main-content">당신의 게임을 기록하세요. <br>그리고 더 많은 승리를 쟁취하세요.</p>
             <form action="{% url "accounts:signup" %}" method="POST" id="form-signup">
                 {% csrf_token %}
-                {{form1|linebreaks}}
+                {{signup_form|linebreaks}}
+            </form>
+            <form action="{% url "accounts:login" %}" method="POST" id="form-login">
+                {% csrf_token %}
+                {{login_form|linebreaks}}
             </form>
             <div id="form-error"></div>
             <button class="button-signup show">시작하기</button>
             <button class="button-signup-submit">가입</button>
-            <button class="button-login show" onclick="location.href='{% url "login" %}'">로그인</button>
+            <button class="button-login show">로그인</button>
+            <button class="button-login-submit">로그인</button>
         {% endif %}
     </div>
     <script src="{% static "jquery-3.0.0.min.js" %}"></script>
@@ -195,7 +200,6 @@
             $(".button-signup-submit").toggleClass("show");
             // Signup Form을 보이게 한다.
             $("#form-signup").slideDown("slow");
-            // $("#form-signup").toggleClass("show");
         });
         $(".button-signup-submit").click(function(){
             // $("#form-signup").submit();
@@ -218,6 +222,16 @@
                 // redirection이 이뤄지지 않은 것이므로 Form에 error가 있었다는 것이다.
                 // error message를 띄워준다.
             });
+        });
+        $(".button-login").click(function(){
+            // 자기 자신을 없앤다.
+            $(this).toggleClass("show");
+            // 회원가입 버튼을 없앤다.
+            $(".button-signup").toggleClass("show");
+            // 로그인 제출 버튼을 보이게 한다.
+            $(".button-login-submit").toggleClass("show");
+            // Login Form을 보이게 한다.
+            $("#form-login").slideDown("slow");
         });
     </script>
 </body>

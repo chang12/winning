@@ -1,12 +1,12 @@
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 # from accounts.forms import MyUserCreationForm as UserCreationForm
-from accounts.forms import MyUserCreationForm as UserCreationForm
+from accounts.forms import MyUserCreationForm as UserCreationForm, MyAuthenticationForm as AuthenticationForm
 
 from .forms import MatchForm
 from .models import Match, Team
@@ -23,10 +23,12 @@ def index(request):
         num = len(matches_to_me)
     except:
         num = 0
-    form1 = UserCreationForm()
+    signup_form = UserCreationForm()
+    login_form = AuthenticationForm()
     return render(request, 'record/index.html', {
         'num': num,
-        'form1': form1,
+        'signup_form': signup_form,
+        'login_form': login_form,
     })
 
 

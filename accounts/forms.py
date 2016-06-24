@@ -3,15 +3,13 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django import forms
 
-from .models import Profile
-
 
 class MyAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(MyAuthenticationForm, self).__init__(*args, **kwargs)
-        for field in self.fields:
-            self.fields[field].label = ''
-        self.fields['username'].widget.attrs['placeholder'] = '이름'
+        self.fields['username'].label = ''
+        self.fields['password'].label = ''
+        self.fields['username'].widget.attrs['placeholder'] = '이메일'
         self.fields['password'].widget.attrs['placeholder'] = '비밀번호'
 
 
