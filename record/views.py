@@ -23,13 +23,20 @@ def index(request):
         num = len(matches_to_me)
     except:
         num = 0
-    signup_form = UserCreationForm()
-    login_form = AuthenticationForm()
-    return render(request, 'record/index.html', {
-        'num': num,
-        'signup_form': signup_form,
-        'login_form': login_form,
-    })
+
+    if request.user.is_authenticated():
+        name = request.user.profile.name
+        return render(request, 'record/index.html', {
+            'num': num,
+            'name': name,
+        })
+    else:
+        signup_form = UserCreationForm()
+        login_form = AuthenticationForm()
+        return render(request, 'record/index.html', {
+            'signup_form': signup_form,
+            'login_form': login_form,
+        })
 
 
 @login_required

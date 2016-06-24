@@ -12,7 +12,7 @@
     <style>
         body, html{
             width: 100%;
-            height: 100%;
+            /*height: 100%;*/
             margin: 0px;
             overflow: auto;
         }
@@ -60,13 +60,14 @@
             font-size: 4.5vw;
             border: none;
             border-radius: 1vw;
+            background-color: #555555;
             color: white;
             display: none;
         }
-        .button-signup, .button-signup-submit {
+        button.blue {
             background-color: #008CBA;
         }
-        .button-login, .button-login-submit {
+        button.gray {
             background-color: #555555;
         }
         .background {
@@ -148,21 +149,12 @@
             {% if num != 0 %}
             <p class="main-alarm"><a href="{% url "record:profile" %}">{{num}}</a>건의 매치가 승인 대기중입니다</p>
             {% endif %}
-            <p class="main-title">{{user.username}}님<br>환영합니다!</p>
+            <p class="main-title">{{user.profile.name}}님<br>환영합니다!</p>
             <p class="main-content"></p>
-            <form action="{% url "logout" %}">
-                <input type="hidden" name="next" value="{{request.path}}"/>
-                <button>로그아웃</button>
-            </form>
-            <form action="{% url "record:profile" %}">
-                <button>마이 페이지</button>
-            </form>
-            <form action="{% url "record:find" "new" %}">
-                <button>전적 생성</button>
-            </form>
-            <form action="{% url "record:find" "detail" %}">
-                <button>상대전적 확인</button>
-            </form>
+            <button class="gray show" onclick="location.href='{% url "logout" %}'">로그아웃</button>
+            <button class="blue show" onclick="location.href='{% url "record:profile" %}'">마이 페이지</button>
+            <button class="blue show" onclick="location.href='{% url "record:find" "new" %}'">전적 생성</button>
+            <button class="blue show" onclick="location.href='{% url "record:find" "detail" %}'">전적 확인</button>
         {% else %}
             {% if messages %}
             {% for message in messages %}
@@ -183,10 +175,10 @@
                 {{login_form|linebreaks}}
             </form>
             <div id="form-error"></div>
-            <button class="button-signup show">시작하기</button>
-            <button class="button-signup-submit">가입</button>
-            <button class="button-login show">로그인</button>
-            <button class="button-login-submit">로그인</button>
+            <button class="button-signup blue show">시작하기</button>
+            <button class="button-signup-submit blue">가입</button>
+            <button class="button-login gray show">로그인</button>
+            <button class="button-login-submit gray">로그인</button>
         {% endif %}
     </div>
     <script src="{% static "jquery-3.0.0.min.js" %}"></script>
