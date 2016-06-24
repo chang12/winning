@@ -124,7 +124,7 @@
         }
         #form-error {
             width: 60vw;
-            height: 6vh;
+            min-height: 6vh;
             line-height: 6vh;
             margin-left: 20vw;
             margin-right: 20vw;
@@ -232,6 +232,25 @@
             $(".button-login-submit").toggleClass("show");
             // Login Form을 보이게 한다.
             $("#form-login").slideDown("slow");
+        });
+        $(".button-login-submit").click(function(){
+            // $("#form-signup").submit();
+            $("#form-error").slideUp();
+            $("#form-error").text("");
+            $.ajax({
+                // AJAX로 비동기적으로 form data를 담당 view에게 보낸다.
+                url: $("#form-login").attr("action"),
+                type : "POST",
+                data : $("#form-login").serialize(),
+            }).done(function(response) {
+                if(response.status){
+                    $(location).attr("href", response.url)
+                }
+                else{
+                    $("#form-error").text(response.error);
+                    $("#form-error").slideDown();
+                }
+            });
         });
     </script>
 </body>

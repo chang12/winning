@@ -2,7 +2,8 @@ from uuid import uuid4
 
 # from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import login as auth_login, authenticate
+from django.contrib.auth import authenticate
+from django.contrib.auth.views import login as auth_login
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -12,12 +13,53 @@ from django.shortcuts import redirect, render
 from winning import settings
 
 from .forms import MyUserCreationForm as UserCreationForm
+from .forms import MyAuthenticationForm as AuthenticationForm
 from .models import Token
 
 
 # Create your views here.
 def login(request):
-    auth_login(request)
+    # 지금 코드 상태에 불필요한 로직이 많아보인다.
+    # AuthenticationForm의 validation 과정에 authenticate 하고,
+    # return 값의 존재성을 체크하는 과정이 있다.
+    # 그리고 User의 is_active 체크 과정도 있다.
+    # 일례로, inactive한 user의 정보로 login을 시도하면,
+    # 이 view의 로직대로 error를 띄우는게 아니라,
+    # AuthenticationForm의 invalid code의 error message가 뜬다.
+
+    if request.method == 'POST':
+        data = {}
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    auth_login(request, user)
+                    data['status'] = True
+                    data['url'] = reverse('record:index')
+                    return JsonResponse(data)
+                else:
+                    data['status'] = False
+                    data['error'] = "인증 이메일을 확인해주세요."
+                    return JsonResponse(data)
+            else:
+                data['status'] = False
+                data['error'] = "유효하지 않은 계정 정보입니다."
+                return JsonResponse(data)
+
+        else:
+            error_key = list(form.errors.keys())[0]
+            # 그 field의 첫번째 error의 메시지를 획득한다.
+            error_message = form.errors[error_key][0]
+            data['status'] = False
+            data['error'] = error_message
+            return JsonResponse(data)
+
+    else:
+        messages.warning(request, '유효하지 않은 접근입니다.')
+        return redirect('record:index')
 
 
 def signup(request):
@@ -71,6 +113,7 @@ def signup(request):
     return render(request, 'accounts/signup.html', {
         'form': form,
     })
+
 
 def confirm(request, token):
     try:
