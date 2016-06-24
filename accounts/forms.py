@@ -44,6 +44,13 @@ class MyUserCreationForm(forms.Form):
             attrs={"placeholder": "비밀번호 확인"}
         ),
     )
+    name = forms.CharField(
+        max_length=20,
+        label='',
+        widget=forms.TextInput(
+            attrs={"placeholder": "사용자 이름"}
+        ),
+    )
 
     # Email 값을 입력하지 않는 것은, default validators가 처리해준다.
     def clean_email(self):
@@ -65,7 +72,7 @@ class MyUserCreationForm(forms.Form):
                 code='password_mismatch',
             )
         # password mismatch 문제를 우선 확인하고, validate.
-        password_validation.validate_password(self.cleaned_data.get('password2'))
+        password_validation.validate_password(password2)
 
         return password2
 

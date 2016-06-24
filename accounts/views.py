@@ -14,7 +14,7 @@ from winning import settings
 
 from .forms import MyUserCreationForm as UserCreationForm
 from .forms import MyAuthenticationForm as AuthenticationForm
-from .models import Token
+from .models import Profile, Token
 
 
 # Create your views here.
@@ -70,8 +70,12 @@ def signup(request):
             # User를 생성한다.
             username = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password2')
+            name = form.cleaned_data.get('name')
             email = form.cleaned_data.get('email')
             user = User.objects.create_user(username, email, password, is_active=False)
+            # Profile을 생성한다.
+            profile = Profile(user=user, name=name)
+            profile.save()
 
             # Token을 생성해서 DB에 저장한다.
             token = str(uuid4()) + '-' + str(user.pk)
