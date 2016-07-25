@@ -195,8 +195,8 @@
         });
         $(".button-signup-submit").click(function(){
             // $("#form-signup").submit();
-            $("#form-error").slideUp();
-            $("#form-error").text("");
+            $("#form-error").slideDown();
+            $("#form-error").text("계정정보를 생성중입니다...");
             $.ajax({
                 // AJAX로 비동기적으로 form data를 담당 view에게 보낸다.
                 url: $("#form-signup").attr("action"),
@@ -207,6 +207,7 @@
                     $(location).attr("href", response.url)
                 }
                 else{
+                    $("#form-error").slideUp();
                     $("#form-error").text(response.error);
                     $("#form-error").slideDown();
                 }
