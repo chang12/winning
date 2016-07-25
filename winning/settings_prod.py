@@ -1,6 +1,6 @@
 from .settings import *
 
-password = os.environ['PASSWORD']
+# password = os.environ['PASSWORD']
 # SECRET_KEY = os.environ['SECRET_KEY']
 DOMAIN_NAME = "http://winning.fakenerd.kr"
 

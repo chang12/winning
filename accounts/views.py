@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-# from django.conf import settings
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
-from winning import settings
+# from winning import settings
 
 from .forms import MyUserCreationForm as UserCreationForm
 from .forms import MyAuthenticationForm as AuthenticationForm
